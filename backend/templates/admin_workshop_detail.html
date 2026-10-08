@@ -1,0 +1,213 @@
+{% extends "base.html" %}
+{% block title %}{{ workshop.name }} — Admin{% endblock %}
+{% block body %}
+<div class="admin-shell">
+  {% set page_title = workshop.name %}
+  {% set breadcrumbs = [{'label': workshop.name}] %}
+  {% include "_admin_header.html" %}
+
+  <div class="card">
+    <div style="display:flex;align-items:center;justify-content:space-between;">
+      <div>
+        <div style="font-size:0.75rem;text-transform:uppercase;color:#6b7280;letter-spacing:0.05em;">Slug</div>
+        <code style="font-size:1rem;">{{ workshop.slug }}</code>
+      </div>
+      <div>
+        <form method="post" action="{{ url_for('admin_workshop_archive', slug=workshop.slug) }}" onsubmit="return confirm('Archive {{ workshop.name }}? You can re-create later under the same slug only after recovering it manually.');" style="display:inline;">
+          <button class="danger-btn" type="submit">Archive workshop</button>
+        </form>
+      </div>
+    </div>
+    {% if workshop.short_description %}
+      <p style="margin:1rem 0 0 0;color:#374151;">{{ workshop.short_description }}</p>
+    {% endif %}
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:0.75rem;margin-top:1.25rem;">
+      <div><div style="font-size:0.72rem;text-transform:uppercase;color:#6b7280;">Contact</div><div>{{ workshop.contact_email or '—' }}</div></div>
+      <div><div style="font-size:0.72rem;text-transform:uppercase;color:#6b7280;">Status</div><div>{{ workshop.status }}</div></div>
+      <div><div style="font-size:0.72rem;text-transform:uppercase;color:#6b7280;">Created by</div><div>{{ workshop.created_by_username or '—' }}</div></div>
+      <div><div style="font-size:0.72rem;text-transform:uppercase;color:#6b7280;">Created</div><div>{{ workshop.created_at }}</div></div>
+    </div>
+  </div>
+
+  {% if summary %}
+  <div class="card">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.25rem;">
+      <h2 style="margin:0;">Workshop summary</h2>
+      <a class="secondary-btn" href="{{ url_for('admin_workshop_rollup', slug=workshop.slug) }}" style="text-decoration:none;">All-sessions rollup report →</a>
+    </div>
+    <p class="help-note" style="margin-top:0.25rem;">Rolled up across the {{ summary.session_count }} non-archived session{{ '' if summary.session_count == 1 else 's' }} from {{ summary.first_date }} to {{ summary.last_date }}.</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:0.75rem;margin:1rem 0;">
+      <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:0.75rem;">
+        <div style="font-size:0.72rem;text-transform:uppercase;color:#6b7280;letter-spacing:0.05em;">Sessions</div>
+        <div style="font-size:1.6rem;font-weight:700;color:#1e3a5f;line-height:1.1;">{{ summary.session_count }}</div>
+      </div>
+      <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:0.75rem;">
+        <div style="font-size:0.72rem;text-transform:uppercase;color:#6b7280;letter-spacing:0.05em;">Counted participants</div>
+        <div style="font-size:1.6rem;font-weight:700;color:#1e3a5f;line-height:1.1;">{{ summary.total_counted }}</div>
+      </div>
+      <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:0.75rem;">
+        <div style="font-size:0.72rem;text-transform:uppercase;color:#6b7280;letter-spacing:0.05em;">Partner firms</div>
+        <div style="font-size:1.6rem;font-weight:700;color:#1e3a5f;line-height:1.1;">{{ summary.total_partners }}</div>
+      </div>
+      {% if summary.workshop_pre_avg is not none or summary.workshop_post_avg is not none %}
+      <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:0.75rem;">
+        <div style="font-size:0.72rem;text-transform:uppercase;color:#6b7280;letter-spacing:0.05em;">Pre / Post avg</div>
+        <div style="font-size:1.1rem;font-weight:700;color:#1e3a5f;line-height:1.2;">
+          {{ summary.workshop_pre_avg if summary.workshop_pre_avg is not none else '—' }}
+          → {{ summary.workshop_post_avg if summary.workshop_post_avg is not none else '—' }}
+        </div>
+        {% if summary.workshop_delta is not none %}
+          <div style="font-size:0.85rem;font-weight:600;color:{{ '#15803d' if summary.workshop_delta >= 0 else '#b91c1c' }};">
+            {{ '+' if summary.workshop_delta >= 0 else '' }}{{ summary.workshop_delta }} Δ
+          </div>
+        {% endif %}
+      </div>
+      {% endif %}
+    </div>
+
+    {% if summary.session_summaries %}
+    <h3 style="font-size:0.95rem;margin:1.25rem 0 0.5rem 0;color:#1e3a5f;">Per-session progression</h3>
+    <table class="users-table">
+      <thead>
+        <tr>
+          <th>Session</th>
+          <th>Dates</th>
+          <th style="text-align:right;">Participants</th>
+          <th style="text-align:right;">Pre avg</th>
+          <th style="text-align:right;">Post avg</th>
+          <th style="text-align:right;">Δ</th>
+          <th style="text-align:right;">KC pass</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for s in summary.session_summaries %}
+        <tr>
+          <td><a href="{{ url_for('admin_session_detail', slug=workshop.slug, session_slug=s.slug) }}">{{ s.name }}</a></td>
+          <td style="font-size:0.85rem;color:#6b7280;">{{ s.start_date }} → {{ s.end_date }}</td>
+          <td style="text-align:right;font-variant-numeric:tabular-nums;">{{ s.participants }}</td>
+          <td style="text-align:right;font-variant-numeric:tabular-nums;">{{ s.pre_avg if s.pre_avg is not none else '—' }}</td>
+          <td style="text-align:right;font-variant-numeric:tabular-nums;">{{ s.post_avg if s.post_avg is not none else '—' }}</td>
+          <td style="text-align:right;font-variant-numeric:tabular-nums;font-weight:600;color:{{ '#15803d' if s.delta is not none and s.delta >= 0 else ('#b91c1c' if s.delta is not none else '#6b7280') }};">
+            {% if s.delta is not none %}{{ '+' if s.delta >= 0 else '' }}{{ s.delta }}{% else %}—{% endif %}
+          </td>
+          <td style="text-align:right;font-variant-numeric:tabular-nums;">{% if s.kc_pass_rate is not none %}{{ s.kc_pass_rate }}%{% else %}—{% endif %}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% endif %}
+
+    {% if summary.top_partners %}
+    <h3 style="font-size:0.95rem;margin:1.5rem 0 0.5rem 0;color:#1e3a5f;">Top partners by participant volume</h3>
+    {% set max_count = summary.top_partners[0][1] %}
+    {% for partner, count in summary.top_partners %}
+      <div style="display:grid;grid-template-columns:200px 1fr 80px;gap:0.5rem;align-items:center;font-size:0.85rem;margin:0.2rem 0;">
+        <div>{{ partner }}</div>
+        <div style="background:#eff6ff;border-radius:3px;height:14px;overflow:hidden;">
+          <div style="background:#0066cc;height:100%;width:{{ (count / max_count * 100) | round(1) }}%;"></div>
+        </div>
+        <div style="text-align:right;font-variant-numeric:tabular-nums;color:#374151;">{{ count }}</div>
+      </div>
+    {% endfor %}
+    {% endif %}
+  </div>
+  {% endif %}
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem;margin-bottom:1.5rem;">
+    <div class="card" style="grid-column: 1 / -1;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem;">
+        <h2 style="margin:0;">Sessions</h2>
+        <a class="primary-btn" href="{{ url_for('admin_session_new', slug=workshop.slug) }}" style="text-decoration:none;">＋ New session</a>
+      </div>
+      <p class="help-note" style="margin:0 0 0.75rem 0;">Each session is one running of <strong>{{ workshop.name }}</strong> with its own dates, participants, and reports.</p>
+      {% if not sessions %}
+        <p class="help-note" style="margin-top:1rem;">No sessions yet. <a href="{{ url_for('admin_session_new', slug=workshop.slug) }}">Create the first session</a>.</p>
+      {% else %}
+        <table class="users-table">
+          <thead><tr><th>Slug</th><th>Name</th><th>Start</th><th>End</th><th>Status</th><th style="text-align:right;">Actions</th></tr></thead>
+          <tbody>
+            {% for s in sessions %}
+            <tr>
+              <td><code>{{ s.slug }}</code></td>
+              <td><a href="{{ url_for('admin_session_detail', slug=workshop.slug, session_slug=s.slug) }}"><strong>{{ s.name }}</strong></a></td>
+              <td>{{ s.start_date }}</td>
+              <td>{{ s.end_date }}</td>
+              <td><span class="badge">{{ s.status }}</span></td>
+              <td style="text-align:right;">
+                <a class="secondary-btn" href="{{ url_for('admin_session_detail', slug=workshop.slug, session_slug=s.slug) }}" style="text-decoration:none;">Open</a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% endif %}
+    </div>
+    <div class="card" style="grid-column: 1 / -1;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem;">
+        <h2 style="margin:0;">Content</h2>
+        {% if pages %}<a class="secondary-btn" href="/w/{{ workshop.slug }}/01-overview.html" target="_blank" rel="noopener" style="text-decoration:none;">Open public site ↗</a>{% endif %}
+      </div>
+      <p class="help-note" style="margin:0 0 0.75rem 0;">Files live in the repo at <code>{{ content_root }}</code> and are served at <code>/w/{{ workshop.slug }}/&lt;file&gt;</code>. Add or edit pages by pushing to <code>main</code> on GitHub — the deploy runs in &lt; 5 seconds.</p>
+      {% if pages is none %}
+        <div style="background:#fef9c3;border-left:4px solid #ca8a04;padding:0.6rem 0.9rem;border-radius:0 4px 4px 0;font-size:0.85rem;color:#854d0e;margin:0.5rem 0;">
+          <strong>No content folder yet.</strong> Create <code>{{ content_root }}</code> in the repo and add HTML pages. Easiest start: copy an existing workshop's folder and adapt — e.g. <code>cp -r docs/ifp/ {{ content_root }}</code>, then edit page titles and the sidebar nav.
+        </div>
+      {% elif not pages %}
+        <p class="help-note" style="margin:0.5rem 0;">Folder exists but is empty.</p>
+      {% else %}
+        <table class="users-table">
+          <thead><tr><th>File</th><th>Size</th><th>Last modified</th><th style="text-align:right;">View</th></tr></thead>
+          <tbody>
+            {% for p in pages %}
+            <tr>
+              <td><code>{{ p.filename }}</code></td>
+              <td>{{ p.size_kb }} kB</td>
+              <td>{{ p.modified }}</td>
+              <td style="text-align:right;">
+                <a class="secondary-btn" href="{{ p.url }}" target="_blank" rel="noopener" style="text-decoration:none;">Open ↗</a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% endif %}
+    </div>
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem;">
+        <h2 style="margin:0;">Survey templates</h2>
+        <a class="primary-btn" href="{{ url_for('admin_survey_templates', slug=workshop.slug) }}" style="text-decoration:none;">Manage →</a>
+      </div>
+      <p class="help-note" style="margin:0;">Define the pre-workshop, post-workshop, and knowledge-check surveys participants take from inside the workshop site. Same template applies across every session.</p>
+    </div>
+
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem;">
+        <h2 style="margin:0;">Promotion toolkit</h2>
+        {% if toolkit_assets %}
+          <a class="primary-btn" href="{{ url_for('admin_workshop_toolkit', slug=workshop.slug) }}" style="text-decoration:none;">Open →</a>
+        {% endif %}
+      </div>
+      {% if toolkit_assets %}
+        <div style="font-size:1.4rem;font-weight:700;color:#1e3a5f;">{{ toolkit_assets|length }}</div>
+        <div class="help-note" style="margin:0.25rem 0 0 0;">copy-pasteable assets in <code>{{ toolkit_root }}</code></div>
+      {% elif toolkit_assets is none %}
+        <p class="help-note" style="margin:0;">No <code>{{ toolkit_root }}</code> folder yet. Copy from IFP to seed: <code>cp -r toolkit/ifp/ {{ toolkit_root }}</code>, then edit each asset for this workshop.</p>
+      {% else %}
+        <p class="help-note" style="margin:0;">Folder is empty. Add markdown files (first line <code># Title</code>, optional <code>&gt; Description</code>, then the copy-pasteable body).</p>
+      {% endif %}
+    </div>
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem;">
+        <h2 style="margin:0;">Tenant pool</h2>
+        <a class="primary-btn" href="{{ url_for('admin_workshop_tenants', slug=workshop.slug) }}" style="text-decoration:none;">Manage →</a>
+      </div>
+      <p class="help-note" style="margin:0;">Pre-provisioned Anaplan credentials handed to participants for the week of their session. Import in bulk via CSV, or add one at a time.</p>
+    </div>
+
+    <div class="card">
+      <h2>Reports</h2>
+      <p class="help-note">Exec summary, partner sponsor reports, Slack celebration post, anonymous-survey aggregate. Run per-session once sessions land; workshop-level rollups across sessions come after.</p>
+    </div>
+  </div>
+</div>
+{% endblock %}

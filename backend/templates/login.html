@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Sign in — Anaplan Workshops{% endblock %}
+{% block body %}
+<div class="auth-shell">
+  <div class="auth-card">
+    <h1>Welcome to Anaplan Workshops</h1>
+    <div class="subtitle">Hands-on learning for Anaplan delivery partners. Sign in with the credentials your facilitator sent you and we'll take you straight to your workshop.</div>
+    {% if error %}<div class="auth-error">{{ error }}</div>{% endif %}
+    <form method="post" action="{{ url_for('login') }}{% if next %}?next={{ next }}{% endif %}" autocomplete="on">
+      <label for="username">Username</label>
+      <input id="username" name="username" type="text" required autocomplete="username" autofocus>
+      <label for="password">Password</label>
+      <input id="password" name="password" type="password" required autocomplete="current-password">
+      <button type="submit">Sign in</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

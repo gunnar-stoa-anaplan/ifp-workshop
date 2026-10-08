@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Erweiterungsübung 1 — IFP Delivery Partner Workshop</title>
+  <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body>
+  <div class="mobile-header">
+    <button id="hamburger">☰</button>
+    <span>IFP Delivery Partner Workshop</span>
+  </div>
+
+  <nav class="sidebar"></nav>
+
+<main class="main-content">
+    <div class="content-header">
+      <h1>Erweiterungsübung 1: Manual Adjustments</h1>
+      <p class="subtitle">Fügen Sie 2 neue Manual-Adjustment-Line Items zum OpEx-Modul hinzu und passen Sie die Aggregationsformel an</p>
+      <div class="badge-row"><span class="content-badge">Erweiterungen</span><span class="content-badge">30 Min.</span><span class="content-badge">Angeleitete Übung</span></div>
+    </div>
+    <div class="content-body">
+
+      <div class="callout-info" style="background:#eff6ff;border-left:4px solid #3b82f6;">
+        <span class="callout-label">🌐 Hinweis zur Übersetzung</span>
+        <p>Dies ist eine automatische Übersetzung der englischen Originalfassung. Die maßgebliche und aktuellste Version finden Sie <a href="../11-extension-exercise-1.html">hier auf Englisch</a>.</p>
+      </div>
+
+<h2>Geschäftsanforderung</h2>
+      <p>Es werden 2 zusätzliche Arten von Manual Adjustments für Aufwandseingaben benötigt.</p>
+
+      <h2>Lösung</h2>
+      <ul>
+        <li>Neue Line Items zum betroffenen Modul hinzufügen</li>
+        <li>Die Aggregationsformel so anpassen, dass sie die neuen Line Items einbezieht</li>
+      </ul>
+
+      <h2>Schritte</h2>
+
+      <div class="step"><div class="step-badge">1</div><div class="step-content"><h3>Das Expense Planning Modul öffnen</h3><p>Öffnen Sie das Modul <strong>INP OPX Expense Planning</strong> im Modell „Financial Planning".</p></div></div>
+
+      <div class="step"><div class="step-badge">2</div><div class="step-content"><h3>2 neue Line Items hinzufügen</h3><p>Fügen Sie im Abschnitt „Direct Input Method" des Blueprints 2 neue Line Items hinzu:</p><ul><li><strong>Manual Adjustment #1</strong></li><li><strong>Manual Adjustment #2</strong></li><li>Setzen Sie das Format der neuen Line Items (gleich wie „Amount")</li><li>Setzen Sie den Write Access Driver für jedes neue Line Item</li><li>Dokumentieren Sie im Feld „Notes", wofür die Line Items gedacht sind</li></ul></div></div>
+
+      <div class="step"><div class="step-badge">3</div><div class="step-content"><h3>Die Aggregationsformel anpassen</h3><p>Wir müssen die Formel für das Line Item <strong>Direct Input Fcst</strong> anpassen, sodass die 2 neuen Line Items einbezogen werden:</p><ul><li>Formel anpassen</li><li>Dokumentieren Sie, was Sie getan haben:<ul><li>Verwenden Sie das Feld „Notes" des Modul-Blueprints</li><li>Pflegen Sie eine Master-Liste aller Überschreibungen in einem Offline-Dokument, einschließlich der ursprünglichen und der aktualisierten Formel</li></ul></li></ul></div></div>
+
+      <div class="step"><div class="step-badge">4</div><div class="step-content"><h3>Line Item Subset und Admin-Einstellungen aktualisieren</h3><p>Fügen Sie die 2 neuen Line Items zum LISS hinzu (Line Item Subset für Show/Hide):</p><ul><li>Öffnen Sie das Line Item Subset <strong>„LISS: OpEx Filter"</strong></li><li>Setzen Sie die Boolean-Markierung für die 2 neuen Adjustments</li><li>Öffnen Sie das Modul <strong>„ADMIN LISS OpEx Filter"</strong> und setzen Sie für jedes der 2 neuen Line Items die „Forecast Method" auf „Direct Input"</li></ul></div></div>
+
+      <div class="step"><div class="step-badge">5</div><div class="step-content"><h3>In der UX-App verifizieren</h3><p>Öffnen Sie die Seite <strong>„OpEx – planning"</strong> in der UX-App:</p><ul><li>Wählen Sie das Konto <strong>„6005 Office Equipment"</strong></li><li>Prüfen Sie, dass die Logik korrekt funktioniert</li></ul></div></div>
+
+      <div class="prevnext-nav"><a class="prevnext-btn" href="./10-extensions-overview.html">← Zurück</a><a class="prevnext-btn" href="./12-extension-exercise-2.html">Weiter →</a></div>
+    </div>
+  </main>
+  <script src="../../js/nav.js"></script>
+</body>
+</html>

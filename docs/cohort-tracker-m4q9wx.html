@@ -1,0 +1,1936 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="googlebot" content="noindex, nofollow">
+  <title>Cohort Tracker — IFP Delivery Partner Workshop</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    .privacy-banner {
+      background: #fef9c3;
+      border-left: 4px solid #ca8a04;
+      padding: 0.75rem 1rem;
+      border-radius: 0 6px 6px 0;
+      font-size: 0.9rem;
+      margin-bottom: 1.5rem;
+    }
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+      padding: 0.75rem 1rem;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      margin-bottom: 1.5rem;
+    }
+    .toolbar label { font-weight: 600; font-size: 0.9rem; color: #1e3a5f; }
+    .toolbar select, .toolbar input[type="file"] {
+      font-size: 0.9rem;
+      padding: 0.35rem 0.5rem;
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      background: white;
+    }
+    .toolbar button {
+      padding: 0.4rem 0.85rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      background: #0066cc;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .toolbar button:hover { background: #0052a3; }
+    .toolbar button.secondary { background: #6b7280; }
+    .toolbar button.secondary:hover { background: #4b5563; }
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 0.75rem;
+      margin: 1rem 0 1.5rem;
+    }
+    .summary-card {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 0.85rem 1rem;
+    }
+    .summary-card .label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #6b7280;
+      margin-bottom: 0.25rem;
+    }
+    .summary-card .value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #1e3a5f;
+      line-height: 1.1;
+    }
+    .summary-card .sub {
+      font-size: 0.8rem;
+      color: #6b7280;
+      margin-top: 0.25rem;
+    }
+    .partner-block {
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      margin-bottom: 0.85rem;
+      background: white;
+      overflow: hidden;
+    }
+    .partner-block-header {
+      background: #f8fafc;
+      padding: 0.65rem 1rem;
+      font-weight: 600;
+      color: #1e3a5f;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .partner-block-header .count {
+      font-size: 0.8rem;
+      color: #6b7280;
+      font-weight: 500;
+    }
+    .partner-block-header .completion-mini {
+      font-size: 0.8rem;
+      color: #374151;
+      font-weight: 500;
+      display: flex;
+      gap: 0.5rem;
+    }
+    .partner-block-header .completion-mini span {
+      padding: 0.1rem 0.45rem;
+      background: #eff6ff;
+      border-radius: 10px;
+      color: #1e3a5f;
+    }
+    .participants-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+    .participants-table th {
+      text-align: left;
+      padding: 0.5rem 0.75rem;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #6b7280;
+      background: #fafafa;
+      border-bottom: 1px solid #e2e8f0;
+      font-weight: 600;
+    }
+    .participants-table td {
+      padding: 0.4rem 0.75rem;
+      border-bottom: 1px solid #f3f4f6;
+    }
+    .participants-table tr:last-child td { border-bottom: none; }
+    .participants-table input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+    }
+    .participants-table .email-cell {
+      font-family: ui-monospace, "SF Mono", Menlo, monospace;
+      font-size: 0.85rem;
+    }
+    .participants-table .score-cell {
+      font-variant-numeric: tabular-nums;
+      color: #374151;
+    }
+    .chart-area {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 1rem;
+      margin: 1rem 0;
+    }
+    .chart-area h3 {
+      margin: 0 0 0.75rem 0;
+      color: #1e3a5f;
+      font-size: 1rem;
+    }
+    .bar-row {
+      display: grid;
+      grid-template-columns: 130px 1fr 70px;
+      gap: 0.5rem;
+      align-items: center;
+      margin: 0.35rem 0;
+      font-size: 0.85rem;
+    }
+    .bar-row .label-cell { color: #374151; }
+    .bar-row .bar-track {
+      background: #eff6ff;
+      border-radius: 3px;
+      height: 18px;
+      position: relative;
+      overflow: hidden;
+    }
+    .bar-row .bar-fill {
+      background: linear-gradient(90deg, #0066cc, #1e3a5f);
+      height: 100%;
+      border-radius: 3px;
+      transition: width 0.3s;
+    }
+    .bar-row .value-cell {
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+      color: #1e3a5f;
+      font-weight: 600;
+    }
+    .double-bar-row {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      gap: 0.75rem;
+      align-items: center;
+      margin: 0.6rem 0;
+      font-size: 0.85rem;
+    }
+    .double-bar-row .question-cell { color: #374151; line-height: 1.3; }
+    .double-bar-row .bars {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+    .double-bar-row .single-bar {
+      display: grid;
+      grid-template-columns: 40px 1fr 50px;
+      gap: 0.4rem;
+      align-items: center;
+      font-size: 0.75rem;
+    }
+    .double-bar-row .tag-pre { color: #6b7280; font-weight: 600; }
+    .double-bar-row .tag-post { color: #1e3a5f; font-weight: 600; }
+    .double-bar-row .bar-track-mini {
+      background: #f3f4f6;
+      height: 14px;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .double-bar-row .bar-fill-pre {
+      background: #94a3b8;
+      height: 100%;
+    }
+    .double-bar-row .bar-fill-post {
+      background: #0066cc;
+      height: 100%;
+    }
+    .double-bar-row .delta {
+      font-variant-numeric: tabular-nums;
+      font-weight: 600;
+    }
+    .double-bar-row .delta.positive { color: #15803d; }
+    .double-bar-row .delta.negative { color: #b91c1c; }
+    .report-output-box {
+      background: #fafafa;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      padding: 1rem;
+      max-height: 500px;
+      overflow-y: auto;
+      margin-top: 0.75rem;
+    }
+    .file-state {
+      font-size: 0.8rem;
+      color: #6b7280;
+      margin-left: 0.5rem;
+    }
+    .file-state.loaded { color: #15803d; font-weight: 600; }
+    .help-note {
+      font-size: 0.85rem;
+      color: #6b7280;
+      line-height: 1.55;
+      margin: 0.5rem 0;
+    }
+    .completion-pill {
+      display: inline-block;
+      padding: 0.15rem 0.5rem;
+      background: #f3f4f6;
+      color: #374151;
+      border-radius: 10px;
+      font-size: 0.78rem;
+      font-weight: 500;
+      margin-right: 0.3rem;
+    }
+    .completion-pill.high { background: #dcfce7; color: #15803d; }
+    .completion-pill.mid { background: #fef9c3; color: #854d0e; }
+    .completion-pill.low { background: #fee2e2; color: #b91c1c; }
+    .result-pill {
+      display: inline-block;
+      padding: 0.1rem 0.5rem;
+      border-radius: 10px;
+      font-size: 0.78rem;
+      font-weight: 600;
+    }
+    .result-pill.pass { background: #dcfce7; color: #15803d; }
+    .result-pill.fail { background: #fee2e2; color: #b91c1c; }
+    .status-text {
+      font-size: 0.85rem;
+      color: #6b7280;
+      padding: 0.5rem 0.75rem;
+      background: #f8fafc;
+      border-radius: 4px;
+      margin: 0.5rem 0;
+    }
+    .create-cohort-panel {
+      background: #f0f9ff;
+      border: 1px solid #bae6fd;
+      border-radius: 6px;
+      padding: 0.75rem 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .create-cohort-panel summary {
+      cursor: pointer;
+      font-weight: 600;
+      color: #075985;
+      font-size: 0.95rem;
+    }
+    .create-cohort-panel summary:hover { color: #0066cc; }
+    .create-cohort-panel[open] summary { margin-bottom: 0.75rem; }
+    .create-cohort-panel .toolbar { background: white; }
+    .create-cohort-panel input[type="text"], .create-cohort-panel input[type="date"] {
+      font-size: 0.9rem;
+      padding: 0.35rem 0.5rem;
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      background: white;
+    }
+    .create-cohort-panel textarea {
+      width: 100%;
+      min-height: 150px;
+      padding: 0.5rem;
+      font-family: ui-monospace, Menlo, monospace;
+      font-size: 0.85rem;
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      box-sizing: border-box;
+      resize: vertical;
+    }
+    .create-cohort-panel pre {
+      background: #1e293b;
+      color: #e2e8f0;
+      padding: 0.75rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      overflow-x: auto;
+      margin: 0.4rem 0;
+    }
+    .partner-summary-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 4px;
+      margin: 0.5rem 0;
+    }
+    .partner-summary-table th, .partner-summary-table td {
+      padding: 0.4rem 0.75rem;
+      border-bottom: 1px solid #f3f4f6;
+      text-align: left;
+    }
+    .partner-summary-table th {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      color: #6b7280;
+      background: #f8fafc;
+    }
+    .partner-summary-table tr.unknown td { color: #b91c1c; font-weight: 500; }
+    .partner-summary-table tr.excluded td { color: #6b7280; font-style: italic; }
+    .unmapped-warning {
+      background: #fee2e2;
+      border-left: 4px solid #b91c1c;
+      padding: 0.6rem 1rem;
+      border-radius: 0 4px 4px 0;
+      font-size: 0.85rem;
+      color: #7f1d1d;
+      margin: 0.5rem 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="mobile-header">
+    <button id="hamburger">☰</button>
+    <span>IFP Delivery Partner Workshop</span>
+  </div>
+
+      <nav class="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-title">IFP Delivery Partner Workshop</div>
+  </div>
+  <ul class="nav-list">
+    <li class="nav-section-title">Getting Started</li>
+    <ul class="nav-submenu">
+      <li><a class="nav-link" href="./01-overview.html">Workshop Overview</a></li>
+      <li><a class="nav-link" href="./02-tenant-access.html">Tenant Access</a></li>
+      <li><a class="nav-link" href="./03-ifp-overview.html">IFP Overview</a></li>
+      <li><a class="nav-link" href="./04-anaplan-way.html">Anaplan Way for Applications</a></li>
+    </ul>
+    <li class="nav-section-title">Configuration</li>
+    <ul class="nav-submenu">
+      <li><a class="nav-link" href="./05-configurator-walkthrough.html">Application Framework Configurator</a></li>
+      <li><a class="nav-link" href="./06-exercise-1.html">Configuration Exercise 1</a></li>
+      <li><a class="nav-link" href="./06-exercise-2.html">Configuration Exercise 2</a></li>
+      <li><a class="nav-link" href="./06-exercise-3.html">Configuration Exercise 3</a></li>
+      <li><a class="nav-link" href="./07-generation.html">Model Generation</a></li>
+      <li><a class="nav-link" href="./08-post-gen.html">Post-Generation Steps</a></li>
+      <li><a class="nav-link" href="./09-error-logs.html">Error Log Review</a></li>
+    </ul>
+    <li class="nav-section-title">Extensions</li>
+    <ul class="nav-submenu">
+      <li><a class="nav-link" href="./10-extensions-overview.html">Extensions Overview</a></li>
+      <li><a class="nav-link" href="./11-extension-exercise-1.html">Exercise 1</a></li>
+      <li><a class="nav-link" href="./12-extension-exercise-2.html">Exercise 2</a></li>
+    </ul>
+    <li class="nav-section-title">Reference</li>
+    <ul class="nav-submenu">
+      <li><a class="nav-link" href="./13-whats-coming.html">What's Coming</a></li>
+      <li><a class="nav-link" href="./14-qanda.html">Q&A from Sessions</a></li>
+      <li><a class="nav-link" href="./15-workshop-wrap-up.html">Workshop Wrap-up</a></li>
+    </ul>
+  </ul>
+</nav>
+
+  <main class="main-content">
+    <div class="content-header">
+      <h1>Cohort Tracker</h1>
+      <p class="subtitle">Per-cohort participation, partner breakdown, and pre→post survey deltas</p>
+      <div class="badge-row"><span class="content-badge">Facilitator Only</span><span class="content-badge">Internal Use</span></div>
+    </div>
+    <div class="content-body">
+
+      <div class="privacy-banner">
+        <strong>🔒 Private — Do Not Share This URL Publicly.</strong>
+        Participant emails and survey responses are visible here. Reachable only via a non-guessable URL and excluded from search engines. Share with co-facilitators directly, not in public partner channels.
+      </div>
+
+      <div class="callout-info">
+        <span class="callout-label">📦 Related</span>
+        <p>For email templates, promotion copy, and kickoff scripts, see the <a href="./16-facilitator-toolkit-k7p2nx.html"><strong>Facilitator Launch Toolkit</strong></a>. For session run-of-show, see the <a href="./15-facilitator-r9k2x7.html"><strong>Facilitator Run-of-Show</strong></a>.</p>
+      </div>
+
+      <details class="create-cohort-panel">
+        <summary>＋ Import a new cohort from a participant list</summary>
+        <p class="help-note" style="margin-top:0.5rem;">Paste in an email list or upload an XLSX/CSV. Each email is auto-mapped to a partner via its domain (using <code>_partners.json</code>) and Anaplan internal staff are auto-excluded. Outputs a downloadable <code>{cohort-id}.json</code> ready to commit to <code>data/cohorts/</code>, plus the snippet to add to <code>_index.json</code>.</p>
+
+        <div class="toolbar">
+          <label for="new-cohort-id">Cohort ID:</label>
+          <input type="text" id="new-cohort-id" placeholder="2026-06-16" style="width: 130px;">
+          <label for="new-cohort-name">Display name:</label>
+          <input type="text" id="new-cohort-name" placeholder="June 16, 2026 Cohort" style="width: 200px;">
+        </div>
+        <div class="toolbar">
+          <label for="new-cohort-start">Start date:</label>
+          <input type="date" id="new-cohort-start">
+          <label for="new-cohort-end">End date:</label>
+          <input type="date" id="new-cohort-end">
+        </div>
+
+        <div class="toolbar">
+          <label for="new-cohort-upload">Upload XLSX/CSV:</label>
+          <input type="file" id="new-cohort-upload" accept=".xlsx,.xls,.csv">
+          <span class="help-note" style="margin-left:0.5rem;">first column = email</span>
+        </div>
+
+        <p class="help-note">Or paste emails — one per line. Accepts plain <code>user@domain</code>, <code>Name &lt;user@domain&gt;</code>, or <code>"Name" &lt;user@domain&gt;</code>:</p>
+        <textarea id="new-cohort-emails" placeholder="first.last@genpact.com&#10;jane.doe@accenture.com&#10;Jordan Smith &lt;jordan.smith@pwc.com&gt;&#10;..."></textarea>
+
+        <div class="toolbar">
+          <button id="preview-new-cohort-btn">Preview Mapping</button>
+          <button id="download-new-cohort-btn" class="secondary">Download Cohort JSON</button>
+          <button id="copy-index-line-btn" class="secondary" style="display:none;">Copy _index.json Line</button>
+        </div>
+
+        <div id="new-cohort-preview" style="display:none;"></div>
+      </details>
+
+      <h2>1. Select Cohort</h2>
+      <div class="toolbar">
+        <label for="cohort-select">Cohort:</label>
+        <select id="cohort-select"></select>
+        <button id="reload-btn" class="secondary" title="Reload cohort from JSON (discards local checkbox changes)">↻ Reload</button>
+      </div>
+
+      <h2 id="summary-heading">2. Summary</h2>
+      <div id="summary-grid" class="summary-grid"></div>
+
+      <h2>3. Survey &amp; Knowledge Check Data</h2>
+      <p class="help-note">Upload the XLSX export from your survey tool. Expected format: first column is participant email, subsequent columns are question responses (numeric or text). Pre and post surveys should have the <strong>same column headers</strong> so the page can compute per-question deltas.</p>
+      <div class="toolbar">
+        <label for="pre-upload">Pre-survey:</label>
+        <input type="file" id="pre-upload" accept=".xlsx,.xls,.csv">
+        <span id="pre-state" class="file-state">no file loaded</span>
+      </div>
+      <div class="toolbar">
+        <label for="post-upload">Post-survey:</label>
+        <input type="file" id="post-upload" accept=".xlsx,.xls,.csv">
+        <span id="post-state" class="file-state">no file loaded</span>
+      </div>
+      <div class="toolbar">
+        <label for="quiz-upload">Knowledge check:</label>
+        <input type="file" id="quiz-upload" accept=".xlsx,.xls,.csv">
+        <span id="quiz-state" class="file-state">no file loaded</span>
+        <span class="help-note" style="margin-left: 0.75rem;">first column email, second column result (<code>Pass</code> / <code>Fail</code>, or Yes/No/True/False)</span>
+      </div>
+
+      <h2>4. Partner Completion Rates</h2>
+      <div id="partner-chart" class="chart-area"></div>
+
+      <h2>5. Pre vs Post Survey Comparison</h2>
+      <div id="survey-comparison" class="chart-area"><p class="status-text">Upload both pre and post surveys to see this comparison.</p></div>
+
+      <h2>6. Participants by Partner</h2>
+      <p class="help-note">Click checkboxes to mark completion. Changes save locally in your browser and are reflected in the summary cards above. Use "Export updated JSON" below to checkpoint changes for committing to the repo.</p>
+      <div id="participants-section"></div>
+
+      <h2>7. Generate Email Report</h2>
+      <p class="help-note">Produces a copy-paste ready HTML block with embedded styles and charts. Paste into your email client — renders inline without external assets.</p>
+      <div class="toolbar">
+        <button id="generate-report-btn">Generate Report</button>
+        <button id="copy-report-btn" class="secondary">Copy HTML to Clipboard</button>
+      </div>
+      <div id="report-output" class="report-output-box" style="display:none;"></div>
+
+      <h2>8. Slack Celebration Post</h2>
+      <p class="help-note">Pre-fills the <code>amer_partners_alliances</code> celebration template with this cohort's numbers: partner count, participant count, pre→post survey averages, top 3 partners by completion rate, knowledge-check pass rate, and all-three-milestones rate. Bracketed placeholders for the next-cohort date and Slack-question count remain for you to fill in.</p>
+      <div class="toolbar">
+        <button id="generate-slack-btn">Generate Slack Post</button>
+        <button id="copy-slack-btn" class="secondary">Copy to Clipboard</button>
+      </div>
+      <textarea id="slack-output" readonly style="display:none; width:100%; min-height: 360px; padding: 0.75rem; border:1px solid #d1d5db; border-radius:6px; font-family: ui-monospace, 'SF Mono', Menlo, monospace; font-size: 0.85rem; line-height: 1.5; margin-top: 0.75rem; resize: vertical; background: #fafafa;"></textarea>
+
+      <h2>9. Executive Summary Report (Internal)</h2>
+      <p class="help-note">Polished one-pager for Anaplan internal executives and partner alliances leadership. Includes narrative framing, headline numbers, learning progression, partner mix, standouts, an at-risk callout for partners with zero completion, and program-level recommendations for the next cohort.</p>
+      <div class="toolbar">
+        <button id="generate-exec-btn">Generate Executive Summary</button>
+        <button id="copy-exec-btn" class="secondary">Copy HTML to Clipboard</button>
+        <button id="download-exec-btn" class="secondary">Download HTML File</button>
+      </div>
+      <div id="exec-output" class="report-output-box" style="display:none;"></div>
+
+      <h2>10. Partner Sponsor Reports</h2>
+      <p class="help-note">One report per partner firm, addressed to the partner sponsor. Celebrates their team's participation and learning progression, calls out the biggest pre→post improver on their team, and proposes five concrete next steps to translate workshop completion into delivery activity — including copying the reference IFP model + app into the partner's tenant.</p>
+      <div class="toolbar">
+        <label for="partner-report-select">Partner:</label>
+        <select id="partner-report-select"></select>
+        <button id="generate-partner-btn">Generate Report</button>
+        <button id="copy-partner-btn" class="secondary">Copy HTML to Clipboard</button>
+        <button id="download-partner-btn" class="secondary">Download HTML File</button>
+        <button id="download-all-partners-btn" class="secondary">Download All Partner Reports</button>
+      </div>
+      <div id="partner-report-output" class="report-output-box" style="display:none;"></div>
+
+      <h2>11. Export Updated Cohort JSON</h2>
+      <p class="help-note">Downloads the cohort JSON with your local checkbox changes + uploaded survey scores merged in. Replace the file at <code>data/cohorts/{cohort-id}.json</code> and commit to checkpoint progress for other facilitators.</p>
+      <div class="toolbar">
+        <button id="export-json-btn">Download Updated Cohort JSON</button>
+      </div>
+
+    </div>
+  </main>
+
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
+  <script>
+    // ===================== State & Constants =====================
+    const STORAGE_KEY = 'ifp-cohort-tracker-state-v1';
+    const PARTNERS_URL = '../data/cohorts/_partners.json';
+    const INDEX_URL = '../data/cohorts/_index.json';
+
+    const state = {
+      partners: null,
+      excludeSet: new Set(),
+      cohortIndex: null,
+      cohorts: {},           // id -> cohort data (with merged overrides)
+      currentCohortId: null,
+      preSurvey: null,       // { headers: [...], rows: { email: {q1: val, q2: val, ...} } }
+      postSurvey: null,
+      quizScores: null       // { email: score }
+    };
+
+    function loadCache() {
+      try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
+      catch (e) { return {}; }
+    }
+
+    function saveCache(updates) {
+      const cache = loadCache();
+      Object.assign(cache, updates);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(cache));
+    }
+
+    function saveCohortOverrides(cohortId, overrides) {
+      const cache = loadCache();
+      cache.overrides = cache.overrides || {};
+      cache.overrides[cohortId] = overrides;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(cache));
+    }
+
+    // ===================== Init =====================
+    async function init() {
+      try {
+        state.partners = await fetch(PARTNERS_URL).then(r => r.json());
+        state.excludeSet = new Set(state.partners.excludePartners || []);
+        state.cohortIndex = await fetch(INDEX_URL).then(r => r.json());
+        populateCohortSelector();
+
+        const cache = loadCache();
+        const initialId = cache.lastCohortId || state.cohortIndex.cohorts[0]?.id;
+        if (initialId) {
+          document.getElementById('cohort-select').value = initialId;
+          await loadCohort(initialId);
+        }
+      } catch (e) {
+        console.error(e);
+        document.querySelector('.content-body').insertAdjacentHTML(
+          'afterbegin',
+          `<div class="callout-warning"><span class="callout-label">⚠ Failed to load data</span><p>${e.message}</p><p>Make sure you're loading the page via a web server (not file://), and that <code>data/cohorts/_partners.json</code> and <code>_index.json</code> exist.</p></div>`
+        );
+      }
+    }
+
+    function populateCohortSelector() {
+      const sel = document.getElementById('cohort-select');
+      sel.innerHTML = '';
+      state.cohortIndex.cohorts.forEach(c => {
+        const o = document.createElement('option');
+        o.value = c.id;
+        o.textContent = c.name;
+        sel.appendChild(o);
+      });
+      sel.addEventListener('change', e => loadCohort(e.target.value));
+    }
+
+    async function loadCohort(cohortId) {
+      const meta = state.cohortIndex.cohorts.find(c => c.id === cohortId);
+      if (!meta) return;
+      let cohort = state.cohorts[cohortId];
+      if (!cohort) {
+        cohort = await fetch(`../data/cohorts/${meta.file}`).then(r => r.json());
+        state.cohorts[cohortId] = cohort;
+      }
+      // Merge cached overrides
+      const cache = loadCache();
+      const overrides = cache.overrides?.[cohortId] || {};
+      cohort.participants.forEach(p => {
+        if (overrides[p.email]) {
+          Object.assign(p.completion, overrides[p.email].completion || {});
+          if (overrides[p.email].preSurveyScore != null) p.preSurveyScore = overrides[p.email].preSurveyScore;
+          if (overrides[p.email].postSurveyScore != null) p.postSurveyScore = overrides[p.email].postSurveyScore;
+          if (overrides[p.email].knowledgeCheckResult != null) p.knowledgeCheckResult = overrides[p.email].knowledgeCheckResult;
+        }
+      });
+      state.currentCohortId = cohortId;
+      saveCache({ lastCohortId: cohortId });
+      renderAll();
+    }
+
+    function getCurrentCohort() {
+      return state.cohorts[state.currentCohortId];
+    }
+
+    // ===================== Rendering =====================
+    function renderAll() {
+      const c = getCurrentCohort();
+      if (!c) return;
+      document.getElementById('summary-heading').textContent = `2. Summary — ${c.name}`;
+      renderSummary(c);
+      renderPartnerChart(c);
+      renderParticipants(c);
+      renderSurveyComparison();
+      populatePartnerReportSelector();
+    }
+
+    function includedParticipants(cohort) {
+      return cohort.participants.filter(p => !p.excluded);
+    }
+
+    function partnerBreakdown(cohort) {
+      const map = new Map();
+      includedParticipants(cohort).forEach(p => {
+        if (!map.has(p.partner)) map.set(p.partner, []);
+        map.get(p.partner).push(p);
+      });
+      return [...map.entries()]
+        .map(([name, people]) => ({ name, people }))
+        .sort((a, b) => b.people.length - a.people.length || a.name.localeCompare(b.name));
+    }
+
+    function completionRate(people, key) {
+      if (!people.length) return 0;
+      return people.filter(p => p.completion[key]).length / people.length;
+    }
+
+    function allCompleted(people) {
+      if (!people.length) return 0;
+      return people.filter(p => p.completion.preSurvey && p.completion.postSurvey && p.completion.knowledgeCheck).length / people.length;
+    }
+
+    function renderSummary(cohort) {
+      const included = includedParticipants(cohort);
+      const partners = partnerBreakdown(cohort);
+      const preRate = completionRate(included, 'preSurvey');
+      const postRate = completionRate(included, 'postSurvey');
+      const quizRate = completionRate(included, 'knowledgeCheck');
+      const allRate = allCompleted(included);
+
+      const cards = [
+        { label: 'Total Registered', value: cohort.participants.length, sub: `${cohort.participants.length - included.length} excluded (internal)` },
+        { label: 'Counted Participants', value: included.length, sub: `${partners.length} partner${partners.length === 1 ? '' : 's'}` },
+        { label: 'Pre-Survey', value: `${Math.round(preRate * 100)}%`, sub: `${included.filter(p => p.completion.preSurvey).length} of ${included.length}` },
+        { label: 'Post-Survey', value: `${Math.round(postRate * 100)}%`, sub: `${included.filter(p => p.completion.postSurvey).length} of ${included.length}` },
+        { label: 'Knowledge Check (Passed)', value: `${Math.round(quizRate * 100)}%`, sub: `${included.filter(p => p.completion.knowledgeCheck).length} of ${included.length}` },
+        { label: 'All Three Done', value: `${Math.round(allRate * 100)}%`, sub: `pre + post + pass` }
+      ];
+
+      document.getElementById('summary-grid').innerHTML = cards.map(c => `
+        <div class="summary-card">
+          <div class="label">${c.label}</div>
+          <div class="value">${c.value}</div>
+          <div class="sub">${c.sub}</div>
+        </div>
+      `).join('');
+    }
+
+    function renderPartnerChart(cohort) {
+      const partners = partnerBreakdown(cohort);
+      const html = partners.map(p => {
+        const rate = allCompleted(p.people);
+        const pct = Math.round(rate * 100);
+        const sentCount = p.people.length;
+        return `
+          <div class="bar-row">
+            <div class="label-cell" title="${p.name}">${p.name} <span style="color:#6b7280;font-size:0.78rem;">(${sentCount})</span></div>
+            <div class="bar-track"><div class="bar-fill" style="width:${pct}%;"></div></div>
+            <div class="value-cell">${pct}%</div>
+          </div>
+        `;
+      }).join('');
+      document.getElementById('partner-chart').innerHTML = `
+        <h3>All-Three Completion Rate by Partner</h3>
+        <p class="help-note">Percentage of each partner's participants who completed the pre-survey, the post-survey, and <em>passed</em> the knowledge check.</p>
+        ${html || '<p class="status-text">No participants in this cohort.</p>'}
+      `;
+    }
+
+    function renderParticipants(cohort) {
+      const partners = partnerBreakdown(cohort);
+      const html = partners.map(p => {
+        const completion = {
+          pre: p.people.filter(x => x.completion.preSurvey).length,
+          post: p.people.filter(x => x.completion.postSurvey).length,
+          quiz: p.people.filter(x => x.completion.knowledgeCheck).length
+        };
+        const rows = p.people.map(person => `
+          <tr>
+            <td class="email-cell">${escapeHtml(person.email)}</td>
+            <td><input type="checkbox" data-email="${escapeHtml(person.email)}" data-key="preSurvey" ${person.completion.preSurvey ? 'checked' : ''}></td>
+            <td><input type="checkbox" data-email="${escapeHtml(person.email)}" data-key="postSurvey" ${person.completion.postSurvey ? 'checked' : ''}></td>
+            <td><input type="checkbox" data-email="${escapeHtml(person.email)}" data-key="knowledgeCheck" ${person.completion.knowledgeCheck ? 'checked' : ''}></td>
+            <td class="score-cell">${person.preSurveyScore != null ? formatScore(person.preSurveyScore) : '—'}</td>
+            <td class="score-cell">${person.postSurveyScore != null ? formatScore(person.postSurveyScore) : '—'}</td>
+            <td class="score-cell">${formatResult(person.knowledgeCheckResult)}</td>
+          </tr>
+        `).join('');
+        return `
+          <div class="partner-block">
+            <div class="partner-block-header">
+              <span>${p.name}</span>
+              <span class="completion-mini">
+                <span>Pre ${completion.pre}/${p.people.length}</span>
+                <span>Post ${completion.post}/${p.people.length}</span>
+                <span>Quiz ${completion.quiz}/${p.people.length}</span>
+              </span>
+            </div>
+            <table class="participants-table">
+              <thead>
+                <tr>
+                  <th>Email</th>
+                  <th>Pre</th>
+                  <th>Post</th>
+                  <th>Quiz</th>
+                  <th>Pre Score</th>
+                  <th>Post Score</th>
+                  <th>Quiz Result</th>
+                </tr>
+              </thead>
+              <tbody>${rows}</tbody>
+            </table>
+          </div>
+        `;
+      }).join('');
+      const section = document.getElementById('participants-section');
+      section.innerHTML = html || '<p class="status-text">No participants.</p>';
+      section.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+        cb.addEventListener('change', onCheckboxChange);
+      });
+    }
+
+    function onCheckboxChange(e) {
+      const email = e.target.getAttribute('data-email');
+      const key = e.target.getAttribute('data-key');
+      const cohort = getCurrentCohort();
+      const person = cohort.participants.find(p => p.email === email);
+      if (!person) return;
+      person.completion[key] = e.target.checked;
+      // Persist override
+      const cache = loadCache();
+      cache.overrides = cache.overrides || {};
+      cache.overrides[cohort.id] = cache.overrides[cohort.id] || {};
+      cache.overrides[cohort.id][email] = cache.overrides[cohort.id][email] || { completion: {} };
+      cache.overrides[cohort.id][email].completion = { ...person.completion };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(cache));
+      // Re-render the summary stats and partner chart (cheap)
+      renderSummary(cohort);
+      renderPartnerChart(cohort);
+      // Update the partner-block-header mini-stats by re-rendering this block's header only
+      const block = e.target.closest('.partner-block');
+      if (block) {
+        const partner = person.partner;
+        const partnerPeople = includedParticipants(cohort).filter(x => x.partner === partner);
+        const c = {
+          pre: partnerPeople.filter(x => x.completion.preSurvey).length,
+          post: partnerPeople.filter(x => x.completion.postSurvey).length,
+          quiz: partnerPeople.filter(x => x.completion.knowledgeCheck).length
+        };
+        const mini = block.querySelector('.completion-mini');
+        if (mini) mini.innerHTML = `<span>Pre ${c.pre}/${partnerPeople.length}</span><span>Post ${c.post}/${partnerPeople.length}</span><span>Quiz ${c.quiz}/${partnerPeople.length}</span>`;
+      }
+    }
+
+    // ===================== Survey XLSX Parsing =====================
+    async function readXlsxFile(file) {
+      const buf = await file.arrayBuffer();
+      const wb = XLSX.read(buf, { type: 'array' });
+      const ws = wb.Sheets[wb.SheetNames[0]];
+      const rows = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
+      if (!rows.length) return { headers: [], rows: [] };
+      const headers = rows[0].map(h => String(h).trim());
+      const data = rows.slice(1).filter(r => r.some(cell => cell !== '' && cell != null));
+      return { headers, data };
+    }
+
+    function indexSurveyByEmail(parsed) {
+      const { headers, data } = parsed;
+      let emailIdx = headers.findIndex(h => /e-?mail/i.test(h));
+      if (emailIdx < 0) emailIdx = 0;
+      const byEmail = {};
+      const responses = [];
+      data.forEach(row => {
+        const responseObj = {};
+        headers.forEach((h, i) => {
+          if (i === emailIdx) return;
+          responseObj[h] = row[i];
+        });
+        responses.push(responseObj);
+        const email = String(row[emailIdx] || '').trim().toLowerCase();
+        if (!email || !email.includes('@') || email === 'anonymous') return;
+        byEmail[email] = responseObj;
+      });
+      const validEmails = Object.keys(byEmail).length;
+      const anonymous = validEmails === 0 && responses.length > 0;
+      return {
+        headers: headers.filter((_, i) => i !== emailIdx),
+        byEmail,
+        responses,
+        anonymous,
+        totalRows: responses.length,
+        validEmails
+      };
+    }
+
+    function computeAverageScore(responses) {
+      const nums = Object.values(responses).map(v => numericValue(v)).filter(v => v != null);
+      if (!nums.length) return null;
+      return nums.reduce((a, b) => a + b, 0) / nums.length;
+    }
+
+    function attachSurveyToParticipants(survey, key) {
+      const cohort = getCurrentCohort();
+      if (!cohort) return { matched: 0, anonymous: false };
+      if (survey.anonymous) {
+        return { matched: 0, anonymous: true, totalRows: survey.totalRows };
+      }
+      const scoreKey = key === 'preSurvey' ? 'preSurveyScore' : 'postSurveyScore';
+      const cache = loadCache();
+      cache.overrides = cache.overrides || {};
+      cache.overrides[cohort.id] = cache.overrides[cohort.id] || {};
+      let matched = 0;
+      cohort.participants.forEach(p => {
+        const responses = survey.byEmail[p.email];
+        if (responses) {
+          p.completion[key] = true;
+          p[scoreKey] = computeAverageScore(responses);
+          matched++;
+          cache.overrides[cohort.id][p.email] = cache.overrides[cohort.id][p.email] || { completion: {} };
+          cache.overrides[cohort.id][p.email].completion[key] = true;
+          cache.overrides[cohort.id][p.email][scoreKey] = p[scoreKey];
+        }
+      });
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(cache));
+      return { matched, anonymous: false };
+    }
+
+    function normalizePassFail(raw) {
+      if (raw == null || raw === '') return null;
+      const s = String(raw).trim().toLowerCase();
+      if (/^(pass|passed|yes|y|true|1|✓|✔)$/.test(s)) return 'Pass';
+      if (/^(fail|failed|no|n|false|0|✗|✘)$/.test(s)) return 'Fail';
+      return null;
+    }
+
+    function attachQuizToParticipants(parsed) {
+      const cohort = getCurrentCohort();
+      if (!cohort) return 0;
+      const { headers, data } = parsed;
+      const emailIdx = headers.findIndex(h => /e-?mail/i.test(h)) >= 0 ? headers.findIndex(h => /e-?mail/i.test(h)) : 0;
+      // Look for result/pass/status column; fall back to second column
+      let resultIdx = headers.findIndex(h => /result|pass|status|outcome/i.test(h));
+      if (resultIdx < 0) resultIdx = headers.length > 1 ? 1 : 0;
+      const cache = loadCache();
+      cache.overrides = cache.overrides || {};
+      cache.overrides[cohort.id] = cache.overrides[cohort.id] || {};
+      let matched = 0;
+      data.forEach(row => {
+        const email = String(row[emailIdx] || '').trim().toLowerCase();
+        const result = normalizePassFail(row[resultIdx]);
+        if (!email || result == null) return;
+        const person = cohort.participants.find(p => p.email === email);
+        if (person) {
+          person.knowledgeCheckResult = result;
+          person.completion.knowledgeCheck = (result === 'Pass');
+          matched++;
+          cache.overrides[cohort.id][email] = cache.overrides[cohort.id][email] || { completion: {} };
+          cache.overrides[cohort.id][email].completion.knowledgeCheck = person.completion.knowledgeCheck;
+          cache.overrides[cohort.id][email].knowledgeCheckResult = result;
+        }
+      });
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(cache));
+      return matched;
+    }
+
+    function surveyStateLabel(file, result) {
+      if (result.anonymous) {
+        return `${file.name} — ${result.totalRows} anonymous responses (aggregate-only)`;
+      }
+      return `${file.name} — matched ${result.matched} participants`;
+    }
+    document.getElementById('pre-upload').addEventListener('change', async e => {
+      const file = e.target.files[0]; if (!file) return;
+      const parsed = await readXlsxFile(file);
+      state.preSurvey = indexSurveyByEmail(parsed);
+      const result = attachSurveyToParticipants(state.preSurvey, 'preSurvey');
+      document.getElementById('pre-state').textContent = surveyStateLabel(file, result);
+      document.getElementById('pre-state').classList.add('loaded');
+      renderAll();
+    });
+    document.getElementById('post-upload').addEventListener('change', async e => {
+      const file = e.target.files[0]; if (!file) return;
+      const parsed = await readXlsxFile(file);
+      state.postSurvey = indexSurveyByEmail(parsed);
+      const result = attachSurveyToParticipants(state.postSurvey, 'postSurvey');
+      document.getElementById('post-state').textContent = surveyStateLabel(file, result);
+      document.getElementById('post-state').classList.add('loaded');
+      renderAll();
+    });
+    document.getElementById('quiz-upload').addEventListener('change', async e => {
+      const file = e.target.files[0]; if (!file) return;
+      const parsed = await readXlsxFile(file);
+      const n = attachQuizToParticipants(parsed);
+      document.getElementById('quiz-state').textContent = `${file.name} — matched ${n} participants`;
+      document.getElementById('quiz-state').classList.add('loaded');
+      renderAll();
+    });
+
+    // ===================== Pre vs Post Comparison =====================
+    function collectQuestionNums(survey, q, includedEmails) {
+      const nums = [];
+      if (survey.anonymous) {
+        survey.responses.forEach(resp => {
+          const v = numericValue(resp[q]);
+          if (v != null) nums.push(v);
+        });
+      } else {
+        Object.entries(survey.byEmail).forEach(([email, resp]) => {
+          if (includedEmails && !includedEmails.has(email)) return;
+          const v = numericValue(resp[q]);
+          if (v != null) nums.push(v);
+        });
+      }
+      return nums;
+    }
+
+    function renderSurveyComparison() {
+      const target = document.getElementById('survey-comparison');
+      if (!state.preSurvey || !state.postSurvey) {
+        target.innerHTML = '<p class="status-text">Upload both pre and post surveys to see this comparison.</p>';
+        return;
+      }
+      // Find common headers (questions present in both)
+      const commonQs = state.preSurvey.headers.filter(h => state.postSurvey.headers.includes(h));
+      if (!commonQs.length) {
+        target.innerHTML = '<p class="status-text">Pre and post surveys have no common question headers. Make sure both files use identical column names for matched questions.</p>';
+        return;
+      }
+      const cohort = getCurrentCohort();
+      const included = includedParticipants(cohort);
+      const includedEmails = new Set(included.map(p => p.email));
+      const anonymous = state.preSurvey.anonymous || state.postSurvey.anonymous;
+
+      const rows = commonQs.map(q => {
+        const preNums = collectQuestionNums(state.preSurvey, q, includedEmails);
+        const postNums = collectQuestionNums(state.postSurvey, q, includedEmails);
+        const preAvg = preNums.length ? preNums.reduce((a, b) => a + b, 0) / preNums.length : null;
+        const postAvg = postNums.length ? postNums.reduce((a, b) => a + b, 0) / postNums.length : null;
+        return { q, preAvg, postAvg, preN: preNums.length, postN: postNums.length };
+      }).filter(r => r.preAvg != null || r.postAvg != null);
+
+      if (!rows.length) {
+        target.innerHTML = '<p class="status-text">No numeric or Likert responses found in matched columns. The page can chart numeric values or recognized Likert phrases (Very comfortable / Comfortable / Neutral / Uncomfortable / Very uncomfortable, plus the Agree/Disagree equivalents).</p>';
+        return;
+      }
+
+      const maxVal = Math.max(...rows.flatMap(r => [r.preAvg || 0, r.postAvg || 0]));
+      const html = rows.map(r => {
+        const prePct = r.preAvg != null ? (r.preAvg / maxVal * 100) : 0;
+        const postPct = r.postAvg != null ? (r.postAvg / maxVal * 100) : 0;
+        const delta = (r.preAvg != null && r.postAvg != null) ? r.postAvg - r.preAvg : null;
+        const deltaText = delta != null ? (delta >= 0 ? '+' : '') + delta.toFixed(2) : '—';
+        const deltaClass = delta != null ? (delta >= 0 ? 'positive' : 'negative') : '';
+        return `
+          <div class="double-bar-row">
+            <div class="question-cell">${escapeHtml(r.q)}</div>
+            <div class="bars">
+              <div class="single-bar">
+                <span class="tag-pre">PRE</span>
+                <div class="bar-track-mini"><div class="bar-fill-pre" style="width:${prePct}%;"></div></div>
+                <span>${r.preAvg != null ? r.preAvg.toFixed(2) : '—'}</span>
+              </div>
+              <div class="single-bar">
+                <span class="tag-post">POST</span>
+                <div class="bar-track-mini"><div class="bar-fill-post" style="width:${postPct}%;"></div></div>
+                <span>${r.postAvg != null ? r.postAvg.toFixed(2) : '—'}</span>
+              </div>
+              <div class="single-bar">
+                <span></span>
+                <span style="font-size:0.78rem;color:#6b7280;">Δ ${deltaText} (n=${r.preN}/${r.postN})</span>
+                <span class="delta ${deltaClass}"></span>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+      const banner = anonymous ? `
+        <div style="background:#fef9c3;border-left:4px solid #ca8a04;padding:0.6rem 0.9rem;border-radius:0 4px 4px 0;font-size:0.85rem;color:#854d0e;margin-bottom:0.75rem;">
+          <strong>Anonymous survey mode.</strong> No email field in the upload, so per-person matching, completion checkboxes, and per-partner breakdowns are unavailable. Aggregate cohort-wide pre→post deltas shown below. PRE n=${state.preSurvey.totalRows}, POST n=${state.postSurvey.totalRows}.
+        </div>
+      ` : '';
+      target.innerHTML = `
+        ${banner}
+        <h3>Pre vs Post Survey — Question Averages</h3>
+        <p class="help-note">Per-question average. Only questions with the same header in both files are matched. Δ shows the post-pre delta. Likert phrases auto-convert to 1–5.</p>
+        ${html}
+      `;
+    }
+
+    const LIKERT_MAP = {
+      'very comfortable': 5,
+      'comfortable': 4,
+      'somewhat comfortable': 4,
+      'neutral': 3,
+      'somewhat uncomfortable': 2,
+      'uncomfortable': 2,
+      'very uncomfortable': 1,
+      'not at all comfortable': 1,
+      'strongly agree': 5,
+      'agree': 4,
+      'somewhat agree': 4,
+      'neither agree nor disagree': 3,
+      'somewhat disagree': 2,
+      'disagree': 2,
+      'strongly disagree': 1
+    };
+
+    function numericValue(v) {
+      if (typeof v === 'number') return v;
+      if (typeof v === 'string') {
+        const trimmed = v.trim();
+        const likert = LIKERT_MAP[trimmed.toLowerCase()];
+        if (likert != null) return likert;
+        const m = trimmed.match(/^-?\d+(\.\d+)?$/);
+        if (m) return parseFloat(m[0]);
+      }
+      return null;
+    }
+
+    // ===================== Report Generator =====================
+    function generateReportHtml() {
+      const cohort = getCurrentCohort();
+      if (!cohort) return '';
+      const included = includedParticipants(cohort);
+      const partners = partnerBreakdown(cohort);
+      const preRate = completionRate(included, 'preSurvey');
+      const postRate = completionRate(included, 'postSurvey');
+      const quizRate = completionRate(included, 'knowledgeCheck');
+      const allRate = allCompleted(included);
+
+      const partnerRows = partners.map(p => {
+        const sent = p.people.length;
+        const all = p.people.filter(x => x.completion.preSurvey && x.completion.postSurvey && x.completion.knowledgeCheck).length;
+        const pct = Math.round(all / sent * 100);
+        const barW = Math.round(pct * 2);
+        return `
+          <tr>
+            <td style="padding:6px 10px;border-bottom:1px solid #e5e7eb;">${escapeHtml(p.name)}</td>
+            <td style="padding:6px 10px;border-bottom:1px solid #e5e7eb;text-align:right;">${sent}</td>
+            <td style="padding:6px 10px;border-bottom:1px solid #e5e7eb;text-align:right;">${all}</td>
+            <td style="padding:6px 10px;border-bottom:1px solid #e5e7eb;">
+              <div style="display:inline-block;width:200px;background:#eff6ff;border-radius:3px;overflow:hidden;vertical-align:middle;">
+                <div style="background:#0066cc;height:14px;width:${barW}px;"></div>
+              </div>
+              <span style="margin-left:8px;font-weight:600;color:#1e3a5f;">${pct}%</span>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      let surveyHtml = '';
+      if (state.preSurvey && state.postSurvey) {
+        const commonQs = state.preSurvey.headers.filter(h => state.postSurvey.headers.includes(h));
+        const includedEmails = new Set(included.map(p => p.email));
+        const surveyRows = commonQs.map(q => {
+          const preNums = [], postNums = [];
+          Object.entries(state.preSurvey.byEmail).forEach(([email, resp]) => {
+            if (!includedEmails.has(email)) return;
+            const v = numericValue(resp[q]);
+            if (v != null) preNums.push(v);
+          });
+          Object.entries(state.postSurvey.byEmail).forEach(([email, resp]) => {
+            if (!includedEmails.has(email)) return;
+            const v = numericValue(resp[q]);
+            if (v != null) postNums.push(v);
+          });
+          const preAvg = preNums.length ? preNums.reduce((a, b) => a + b, 0) / preNums.length : null;
+          const postAvg = postNums.length ? postNums.reduce((a, b) => a + b, 0) / postNums.length : null;
+          if (preAvg == null && postAvg == null) return '';
+          const delta = (preAvg != null && postAvg != null) ? postAvg - preAvg : null;
+          const deltaText = delta != null ? (delta >= 0 ? '+' : '') + delta.toFixed(2) : '—';
+          const deltaColor = delta != null ? (delta >= 0 ? '#15803d' : '#b91c1c') : '#6b7280';
+          return `
+            <tr>
+              <td style="padding:6px 10px;border-bottom:1px solid #e5e7eb;">${escapeHtml(q)}</td>
+              <td style="padding:6px 10px;border-bottom:1px solid #e5e7eb;text-align:right;">${preAvg != null ? preAvg.toFixed(2) : '—'}</td>
+              <td style="padding:6px 10px;border-bottom:1px solid #e5e7eb;text-align:right;">${postAvg != null ? postAvg.toFixed(2) : '—'}</td>
+              <td style="padding:6px 10px;border-bottom:1px solid #e5e7eb;text-align:right;color:${deltaColor};font-weight:600;">${deltaText}</td>
+            </tr>
+          `;
+        }).filter(Boolean).join('');
+        if (surveyRows) {
+          surveyHtml = `
+            <h3 style="margin-top:24px;color:#1e3a5f;border-bottom:2px solid #0066cc;padding-bottom:6px;font-size:16px;">Pre → Post Survey Comparison</h3>
+            <table style="width:100%;border-collapse:collapse;margin-top:10px;font-size:14px;font-family:Arial,sans-serif;">
+              <thead><tr style="background:#f8fafc;">
+                <th style="padding:8px 10px;text-align:left;font-size:12px;text-transform:uppercase;color:#6b7280;">Question</th>
+                <th style="padding:8px 10px;text-align:right;font-size:12px;text-transform:uppercase;color:#6b7280;">Pre Avg</th>
+                <th style="padding:8px 10px;text-align:right;font-size:12px;text-transform:uppercase;color:#6b7280;">Post Avg</th>
+                <th style="padding:8px 10px;text-align:right;font-size:12px;text-transform:uppercase;color:#6b7280;">Δ</th>
+              </tr></thead>
+              <tbody>${surveyRows}</tbody>
+            </table>
+          `;
+        }
+      }
+
+      return `
+        <div style="font-family:Arial,Helvetica,sans-serif;max-width:720px;color:#374151;font-size:14px;line-height:1.55;">
+          <h2 style="color:#1e3a5f;font-size:20px;margin:0 0 8px 0;">IFP Delivery Workshop — ${escapeHtml(cohort.name)} Report</h2>
+          <p style="color:#6b7280;font-size:13px;margin:0 0 20px 0;">${cohort.startDate} → ${cohort.endDate}</p>
+
+          <h3 style="color:#1e3a5f;border-bottom:2px solid #0066cc;padding-bottom:6px;font-size:16px;">Participation Summary</h3>
+          <table style="width:100%;border-collapse:collapse;margin-top:10px;font-size:14px;">
+            <tbody>
+              <tr><td style="padding:6px 10px;color:#6b7280;">Total registered</td><td style="padding:6px 10px;text-align:right;font-weight:600;">${cohort.participants.length}</td></tr>
+              <tr><td style="padding:6px 10px;color:#6b7280;">Counted participants (excludes internal)</td><td style="padding:6px 10px;text-align:right;font-weight:600;">${included.length}</td></tr>
+              <tr><td style="padding:6px 10px;color:#6b7280;">Partners represented</td><td style="padding:6px 10px;text-align:right;font-weight:600;">${partners.length}</td></tr>
+              <tr><td style="padding:6px 10px;color:#6b7280;">Pre-survey completion</td><td style="padding:6px 10px;text-align:right;font-weight:600;color:#0066cc;">${Math.round(preRate * 100)}%</td></tr>
+              <tr><td style="padding:6px 10px;color:#6b7280;">Post-survey completion</td><td style="padding:6px 10px;text-align:right;font-weight:600;color:#0066cc;">${Math.round(postRate * 100)}%</td></tr>
+              <tr><td style="padding:6px 10px;color:#6b7280;">Knowledge check pass rate</td><td style="padding:6px 10px;text-align:right;font-weight:600;color:#0066cc;">${Math.round(quizRate * 100)}%</td></tr>
+              <tr><td style="padding:6px 10px;color:#6b7280;border-top:2px solid #0066cc;"><strong>All three completed</strong></td><td style="padding:6px 10px;text-align:right;font-weight:700;color:#15803d;border-top:2px solid #0066cc;font-size:16px;">${Math.round(allRate * 100)}%</td></tr>
+            </tbody>
+          </table>
+
+          <h3 style="margin-top:24px;color:#1e3a5f;border-bottom:2px solid #0066cc;padding-bottom:6px;font-size:16px;">Completion by Partner</h3>
+          <p style="color:#6b7280;font-size:13px;margin:8px 0;">Bar shows the share of each partner's participants who completed all three (pre-survey + post-survey + knowledge check).</p>
+          <table style="width:100%;border-collapse:collapse;margin-top:10px;font-size:14px;">
+            <thead><tr style="background:#f8fafc;">
+              <th style="padding:8px 10px;text-align:left;font-size:12px;text-transform:uppercase;color:#6b7280;">Partner</th>
+              <th style="padding:8px 10px;text-align:right;font-size:12px;text-transform:uppercase;color:#6b7280;">Sent</th>
+              <th style="padding:8px 10px;text-align:right;font-size:12px;text-transform:uppercase;color:#6b7280;">All 3 Done</th>
+              <th style="padding:8px 10px;text-align:left;font-size:12px;text-transform:uppercase;color:#6b7280;">Completion</th>
+            </tr></thead>
+            <tbody>${partnerRows}</tbody>
+          </table>
+
+          ${surveyHtml}
+
+          <p style="margin-top:20px;color:#6b7280;font-size:12px;font-style:italic;">Generated ${new Date().toISOString().split('T')[0]} from the IFP Workshop Cohort Tracker.</p>
+        </div>
+      `;
+    }
+
+    document.getElementById('generate-report-btn').addEventListener('click', () => {
+      const html = generateReportHtml();
+      const out = document.getElementById('report-output');
+      out.innerHTML = html;
+      out.style.display = 'block';
+    });
+
+    document.getElementById('copy-report-btn').addEventListener('click', async () => {
+      const html = generateReportHtml();
+      try {
+        await navigator.clipboard.write([
+          new ClipboardItem({
+            'text/html': new Blob([html], { type: 'text/html' }),
+            'text/plain': new Blob([html.replace(/<[^>]+>/g, '')], { type: 'text/plain' })
+          })
+        ]);
+        alert('Report HTML copied to clipboard. Paste into your email client.');
+      } catch (e) {
+        // Fallback: copy as text
+        await navigator.clipboard.writeText(html);
+        alert('Report HTML copied as text (your browser may not support rich-text clipboard).');
+      }
+    });
+
+    // ===================== Slack Celebration Post =====================
+    function generateSlackCelebrationPost() {
+      const cohort = getCurrentCohort();
+      if (!cohort) return '';
+      const included = includedParticipants(cohort);
+      const partners = partnerBreakdown(cohort);
+      const quizRate = completionRate(included, 'knowledgeCheck');
+      const allRate = allCompleted(included);
+
+      const preScores = included.map(p => p.preSurveyScore).filter(v => typeof v === 'number');
+      const postScores = included.map(p => p.postSurveyScore).filter(v => typeof v === 'number');
+      const anonymous = (state.preSurvey?.anonymous) || (state.postSurvey?.anonymous);
+      let preAvg, postAvg, netImprovement;
+      if (anonymous) {
+        const agg = aggregateProgression();
+        preAvg = agg?.preAvg ?? null;
+        postAvg = agg?.postAvg ?? null;
+        netImprovement = agg?.delta ?? null;
+      } else {
+        preAvg = preScores.length ? preScores.reduce((a, b) => a + b, 0) / preScores.length : null;
+        postAvg = postScores.length ? postScores.reduce((a, b) => a + b, 0) / postScores.length : null;
+        netImprovement = (preAvg != null && postAvg != null) ? postAvg - preAvg : null;
+      }
+
+      const includedEmails = new Set(included.map(p => p.email));
+      const biggest = biggestGainQuestion(includedEmails);
+      const biggestGainsQ = biggest ? biggest.q : null;
+
+      // Rank partners by all-three completion rate, then by volume
+      const ranked = partners.map(p => {
+        const doneCount = p.people.filter(x => x.completion.preSurvey && x.completion.postSurvey && x.completion.knowledgeCheck).length;
+        return { name: p.name, count: p.people.length, doneCount, rate: p.people.length ? doneCount / p.people.length : 0 };
+      }).sort((a, b) => b.rate - a.rate || b.count - a.count);
+
+      const medals = ['🥇', '🥈', '🥉'];
+      const top3Lines = ranked.slice(0, 3).map((p, i) =>
+        `${medals[i]} ${p.name} — ${p.doneCount}/${p.count} all three milestones (${Math.round(p.rate * 100)}%)`
+      ).join('\n');
+
+      // Standouts: prefer partners at 100% completion; otherwise the top 3 by completion rate
+      const perfect = ranked.filter(p => p.rate === 1 && p.count >= 1).map(p => p.name);
+      let standoutText;
+      if (perfect.length >= 3) {
+        standoutText = perfect.slice(0, 5).join(', ');
+      } else if (ranked.length >= 3) {
+        standoutText = ranked.slice(0, 3).map(p => p.name).join(', ');
+      } else {
+        standoutText = '[list 3–5 partner firms that stood out — by volume, completion, or pre→post improvement]';
+      }
+
+      const fmt = v => v != null ? v.toFixed(2) : '[X.XX]';
+      const netImp = netImprovement != null ? (netImprovement >= 0 ? '+' : '') + netImprovement.toFixed(2) : '[+X.XX]';
+      const biggestGains = biggestGainsQ ? `"${biggestGainsQ}"` : '[TOPIC area, e.g. "error log triage" or "configurator decisions"]';
+
+      return `🎉 IFP Delivery Workshop — ${cohort.name} just wrapped!
+
+${partners.length} delivery partners sent ${included.length} consultants through the workshop this week. Quick highlights:
+
+📈 Learning progression
+• Pre-workshop survey average: ${fmt(preAvg)}
+• Post-workshop survey average: ${fmt(postAvg)}
+• Net improvement: ${netImp} points — biggest gains in ${biggestGains}
+
+🏆 Top completion rates by partner
+${top3Lines}
+
+✅ Knowledge check pass rate: ${Math.round(quizRate * 100)}%
+🎯 ${Math.round(allRate * 100)}% of all participants completed all three milestones (pre-survey + post-survey + passed the knowledge check).
+
+Huge shout-out to ${standoutText} and to every consultant who put in the time. This is the kind of preparation that turns into smoother customer engagements.
+
+🙏 Thanks also to our IFP product team who staffed the Slack channel all week — [count] questions answered, zero left hanging.
+
+Next cohort opens [DATE]. If you have delivery consultants on your team who'd benefit, get them on the list — every session so far has hit capacity, and we're not extending tenant access past the registered week.
+
+[OPTIONAL: link to the Anaplan Academy registration page]`;
+    }
+
+    document.getElementById('generate-slack-btn').addEventListener('click', () => {
+      const out = document.getElementById('slack-output');
+      out.value = generateSlackCelebrationPost();
+      out.style.display = 'block';
+    });
+
+    document.getElementById('copy-slack-btn').addEventListener('click', async () => {
+      const text = generateSlackCelebrationPost();
+      try {
+        await navigator.clipboard.writeText(text);
+        alert('Slack post copied to clipboard.');
+      } catch (e) {
+        const out = document.getElementById('slack-output');
+        out.value = text;
+        out.style.display = 'block';
+        out.select();
+        alert('Clipboard write failed — text is shown below, select and copy manually.');
+      }
+    });
+
+    // ===================== Executive Summary & Partner Reports =====================
+    function partnerStats(people) {
+      const sent = people.length;
+      const preDone = people.filter(p => p.completion.preSurvey).length;
+      const postDone = people.filter(p => p.completion.postSurvey).length;
+      const quizDone = people.filter(p => p.completion.knowledgeCheck).length;
+      const allDone = people.filter(p => p.completion.preSurvey && p.completion.postSurvey && p.completion.knowledgeCheck).length;
+      const preScores = people.map(p => p.preSurveyScore).filter(v => typeof v === 'number');
+      const postScores = people.map(p => p.postSurveyScore).filter(v => typeof v === 'number');
+      const preAvg = preScores.length ? preScores.reduce((a, b) => a + b, 0) / preScores.length : null;
+      const postAvg = postScores.length ? postScores.reduce((a, b) => a + b, 0) / postScores.length : null;
+      const delta = (preAvg != null && postAvg != null) ? postAvg - preAvg : null;
+      return { sent, preDone, postDone, quizDone, allDone, preAvg, postAvg, delta };
+    }
+
+    function biggestGainQuestion(includedEmails) {
+      if (!state.preSurvey || !state.postSurvey) return null;
+      const commonQs = state.preSurvey.headers.filter(h => state.postSurvey.headers.includes(h));
+      const deltas = commonQs.map(q => {
+        const preNums = collectQuestionNums(state.preSurvey, q, includedEmails);
+        const postNums = collectQuestionNums(state.postSurvey, q, includedEmails);
+        if (!preNums.length || !postNums.length) return null;
+        const preA = preNums.reduce((a, b) => a + b, 0) / preNums.length;
+        const postA = postNums.reduce((a, b) => a + b, 0) / postNums.length;
+        return { q, delta: postA - preA };
+      }).filter(Boolean).sort((a, b) => b.delta - a.delta);
+      return (deltas.length && deltas[0].delta > 0) ? deltas[0] : null;
+    }
+
+    function aggregateProgression() {
+      if (!state.preSurvey || !state.postSurvey) return null;
+      const commonQs = state.preSurvey.headers.filter(h => state.postSurvey.headers.includes(h));
+      const preNums = [], postNums = [];
+      commonQs.forEach(q => {
+        preNums.push(...collectQuestionNums(state.preSurvey, q, null));
+        postNums.push(...collectQuestionNums(state.postSurvey, q, null));
+      });
+      const preAvg = preNums.length ? preNums.reduce((a, b) => a + b, 0) / preNums.length : null;
+      const postAvg = postNums.length ? postNums.reduce((a, b) => a + b, 0) / postNums.length : null;
+      const delta = (preAvg != null && postAvg != null) ? postAvg - preAvg : null;
+      return { preAvg, postAvg, delta, preN: state.preSurvey.totalRows, postN: state.postSurvey.totalRows };
+    }
+
+    function generateExecSummaryHtml() {
+      const cohort = getCurrentCohort();
+      if (!cohort) return '';
+      const included = includedParticipants(cohort);
+      const partners = partnerBreakdown(cohort);
+      const stats = partnerStats(included);
+      const allRate = included.length ? stats.allDone / included.length : 0;
+      const quizRate = included.length ? stats.quizDone / included.length : 0;
+      const preRate = included.length ? stats.preDone / included.length : 0;
+      const postRate = included.length ? stats.postDone / included.length : 0;
+
+      const ranked = partners.map(p => {
+        const s = partnerStats(p.people);
+        return { name: p.name, ...s, rate: p.people.length ? s.allDone / p.people.length : 0 };
+      }).sort((a, b) => b.rate - a.rate || b.sent - a.sent);
+
+      const standouts = ranked.filter(p => p.rate === 1).map(p => p.name);
+      const atRisk = ranked.filter(p => p.rate === 0 && p.sent >= 1).map(p => p.name);
+
+      const includedEmails = new Set(included.map(p => p.email));
+      const biggestGain = biggestGainQuestion(includedEmails);
+      const anonymousSurvey = (state.preSurvey?.anonymous) || (state.postSurvey?.anonymous);
+      const progression = anonymousSurvey
+        ? (aggregateProgression() || { preAvg: stats.preAvg, postAvg: stats.postAvg, delta: stats.delta, preN: null, postN: null })
+        : { preAvg: stats.preAvg, postAvg: stats.postAvg, delta: stats.delta, preN: null, postN: null };
+
+      const partnerRows = ranked.map(p => {
+        const pct = Math.round(p.rate * 100);
+        const barW = Math.round(pct * 1.5);
+        return `
+          <tr>
+            <td style="padding:6px 10px;border-bottom:1px solid #e5e7eb;">${escapeHtml(p.name)}</td>
+            <td style="padding:6px 10px;border-bottom:1px solid #e5e7eb;text-align:right;">${p.sent}</td>
+            <td style="padding:6px 10px;border-bottom:1px solid #e5e7eb;text-align:right;">${p.allDone}</td>
+            <td style="padding:6px 10px;border-bottom:1px solid #e5e7eb;">
+              <div style="display:inline-block;width:150px;background:#eff6ff;border-radius:3px;overflow:hidden;vertical-align:middle;">
+                <div style="background:#0066cc;height:14px;width:${barW}px;"></div>
+              </div>
+              <span style="margin-left:8px;font-weight:600;color:#1e3a5f;">${pct}%</span>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      const recs = [];
+      if (standouts.length) recs.push(`Recognize standout partners: <strong>${standouts.map(s => escapeHtml(s)).join(', ')}</strong> — feature them in partner success comms and lead the next cohort's marketing with their success.`);
+      if (atRisk.length) recs.push(`Re-engage at-risk partners (0% completion this cohort): <strong>${atRisk.map(s => escapeHtml(s)).join(', ')}</strong> — partner alliances to confirm whether timing, framing, or sponsor engagement missed.`);
+      recs.push(`Schedule per-partner tenant-copy working sessions for partners at 75%+ completion so the workshop knowledge translates into customer-tenant work inside the next 30 days.`);
+      recs.push(`Open registration for the next cohort with capacity-led messaging — every cohort to date has filled and we are not extending tenant access past the registered week.`);
+      if (biggestGain) recs.push(`Double down on <em>"${escapeHtml(biggestGain.q)}"</em> content — the largest pre→post improvement signal this cohort (+${biggestGain.delta.toFixed(2)}). Consider it as a standalone office-hours topic for the broader partner community.`);
+
+      return `
+        <div style="font-family:Arial,Helvetica,sans-serif;max-width:760px;color:#374151;font-size:14px;line-height:1.6;">
+          <div style="background:#1e3a5f;color:white;padding:20px 24px;border-radius:6px 6px 0 0;">
+            <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.1em;opacity:0.85;margin-bottom:4px;">Executive Summary — Internal</div>
+            <h1 style="margin:0;font-size:22px;font-weight:600;">IFP Delivery Workshop — ${escapeHtml(cohort.name)}</h1>
+            <div style="font-size:13px;opacity:0.85;margin-top:4px;">${cohort.startDate} → ${cohort.endDate}</div>
+          </div>
+          <div style="border:1px solid #e2e8f0;border-top:none;padding:20px 24px;border-radius:0 0 6px 6px;">
+            <p style="margin:0 0 16px 0;">This cohort took ${included.length} delivery consultants from ${partners.length} partner firm${partners.length === 1 ? '' : 's'} through the IFP Delivery Workshop — a self-paced, tenant-hands-on curriculum covering Application Framework configuration, generation, error-log triage, and extension authoring. The intent: shorten the ramp from "trained on Anaplan" to "billable on an IFP customer engagement."</p>
+
+            ${anonymousSurvey ? `
+            <div style="background:#fef9c3;border-left:4px solid #ca8a04;padding:10px 14px;border-radius:0 4px 4px 0;font-size:13px;color:#854d0e;margin-bottom:16px;">
+              <strong>Methodology note:</strong> This cohort's surveys were collected anonymously. Learning-progression numbers below are aggregate cohort-wide averages (Likert phrases mapped to 1–5), not per-person deltas. Pre n=${state.preSurvey.totalRows}, Post n=${state.postSurvey.totalRows}. Per-partner survey breakdowns are unavailable for this cohort. For future cohorts, configure the survey to require Anaplan sign-in to capture emails.
+            </div>
+            ` : ''}
+
+            <h3 style="color:#1e3a5f;border-bottom:2px solid #0066cc;padding-bottom:6px;font-size:15px;margin:24px 0 12px 0;">Headline Numbers</h3>
+            <table style="width:100%;border-collapse:collapse;font-size:14px;">
+              <tbody>
+                <tr><td style="padding:5px 10px;color:#6b7280;width:60%;">Counted participants (excludes Anaplan internal)</td><td style="padding:5px 10px;text-align:right;font-weight:600;">${included.length}</td></tr>
+                <tr><td style="padding:5px 10px;color:#6b7280;">Partner firms represented</td><td style="padding:5px 10px;text-align:right;font-weight:600;">${partners.length}</td></tr>
+                <tr><td style="padding:5px 10px;color:#6b7280;">Pre-survey completion</td><td style="padding:5px 10px;text-align:right;font-weight:600;">${Math.round(preRate * 100)}%</td></tr>
+                <tr><td style="padding:5px 10px;color:#6b7280;">Post-survey completion</td><td style="padding:5px 10px;text-align:right;font-weight:600;">${Math.round(postRate * 100)}%</td></tr>
+                <tr><td style="padding:5px 10px;color:#6b7280;">Knowledge check pass rate</td><td style="padding:5px 10px;text-align:right;font-weight:600;">${Math.round(quizRate * 100)}%</td></tr>
+                <tr><td style="padding:8px 10px;color:#1e3a5f;border-top:2px solid #0066cc;font-weight:600;">All three milestones completed</td><td style="padding:8px 10px;text-align:right;font-weight:700;color:#15803d;border-top:2px solid #0066cc;font-size:16px;">${Math.round(allRate * 100)}%</td></tr>
+              </tbody>
+            </table>
+
+            <h3 style="color:#1e3a5f;border-bottom:2px solid #0066cc;padding-bottom:6px;font-size:15px;margin:24px 0 12px 0;">Learning Progression${anonymousSurvey ? ' (Aggregate)' : ''}</h3>
+            <table style="width:100%;border-collapse:collapse;font-size:14px;">
+              <tbody>
+                <tr><td style="padding:5px 10px;color:#6b7280;width:60%;">Pre-workshop survey average${anonymousSurvey && progression.preN ? ` <span style="color:#9ca3af;font-size:12px;">(n=${progression.preN})</span>` : ''}</td><td style="padding:5px 10px;text-align:right;font-weight:600;">${progression.preAvg != null ? progression.preAvg.toFixed(2) : '—'}</td></tr>
+                <tr><td style="padding:5px 10px;color:#6b7280;">Post-workshop survey average${anonymousSurvey && progression.postN ? ` <span style="color:#9ca3af;font-size:12px;">(n=${progression.postN})</span>` : ''}</td><td style="padding:5px 10px;text-align:right;font-weight:600;">${progression.postAvg != null ? progression.postAvg.toFixed(2) : '—'}</td></tr>
+                <tr><td style="padding:5px 10px;color:#6b7280;">Net improvement</td><td style="padding:5px 10px;text-align:right;font-weight:700;color:${progression.delta != null && progression.delta >= 0 ? '#15803d' : '#b91c1c'};">${progression.delta != null ? (progression.delta >= 0 ? '+' : '') + progression.delta.toFixed(2) : '—'}</td></tr>
+                ${biggestGain ? `<tr><td style="padding:5px 10px;color:#6b7280;">Biggest gain — topic</td><td style="padding:5px 10px;text-align:right;font-weight:600;">${escapeHtml(biggestGain.q)} (+${biggestGain.delta.toFixed(2)})</td></tr>` : ''}
+              </tbody>
+            </table>
+
+            <h3 style="color:#1e3a5f;border-bottom:2px solid #0066cc;padding-bottom:6px;font-size:15px;margin:24px 0 12px 0;">Partner Mix &amp; Completion</h3>
+            <p style="color:#6b7280;font-size:13px;margin:8px 0;">Sorted by all-three-milestones completion rate, then by participant volume.</p>
+            <table style="width:100%;border-collapse:collapse;font-size:14px;">
+              <thead><tr style="background:#f8fafc;">
+                <th style="padding:8px 10px;text-align:left;font-size:11px;text-transform:uppercase;color:#6b7280;">Partner</th>
+                <th style="padding:8px 10px;text-align:right;font-size:11px;text-transform:uppercase;color:#6b7280;">Sent</th>
+                <th style="padding:8px 10px;text-align:right;font-size:11px;text-transform:uppercase;color:#6b7280;">All 3 Done</th>
+                <th style="padding:8px 10px;text-align:left;font-size:11px;text-transform:uppercase;color:#6b7280;">Completion</th>
+              </tr></thead>
+              <tbody>${partnerRows}</tbody>
+            </table>
+
+            ${standouts.length ? `
+            <h3 style="color:#1e3a5f;border-bottom:2px solid #0066cc;padding-bottom:6px;font-size:15px;margin:24px 0 12px 0;">Standout Partners</h3>
+            <p style="margin:0 0 8px 0;">${standouts.map(s => `<strong>${escapeHtml(s)}</strong>`).join(', ')} — 100% of their registered consultants completed all three milestones.</p>
+            ` : ''}
+
+            ${atRisk.length ? `
+            <h3 style="color:#b91c1c;border-bottom:2px solid #b91c1c;padding-bottom:6px;font-size:15px;margin:24px 0 12px 0;">Re-engagement Needed</h3>
+            <p style="margin:0 0 8px 0;">${atRisk.map(s => `<strong>${escapeHtml(s)}</strong>`).join(', ')} — registered consultants but zero milestone completion. Partner alliances to follow up before the next cohort opens.</p>
+            ` : ''}
+
+            <h3 style="color:#1e3a5f;border-bottom:2px solid #0066cc;padding-bottom:6px;font-size:15px;margin:24px 0 12px 0;">Recommended Next Steps</h3>
+            <ol style="margin:8px 0 0 0;padding-left:24px;">
+              ${recs.map(r => `<li style="margin-bottom:6px;">${r}</li>`).join('')}
+            </ol>
+
+            <p style="margin-top:28px;color:#6b7280;font-size:12px;font-style:italic;border-top:1px solid #e5e7eb;padding-top:12px;">Generated ${new Date().toISOString().split('T')[0]} from the IFP Workshop Cohort Tracker. Distribution: Anaplan internal partner alliances + IFP product leadership.</p>
+          </div>
+        </div>
+      `;
+    }
+
+    function generatePartnerReportHtml(partnerName) {
+      const cohort = getCurrentCohort();
+      if (!cohort) return '';
+      const people = cohort.participants.filter(p => !p.excluded && p.partner === partnerName);
+      if (!people.length) return `<p>No participants for ${escapeHtml(partnerName)} in this cohort.</p>`;
+
+      const stats = partnerStats(people);
+      const pct = stats.sent ? Math.round(stats.allDone / stats.sent * 100) : 0;
+
+      const personRows = people.map(p => {
+        const preChk = p.completion.preSurvey ? '✓' : '—';
+        const postChk = p.completion.postSurvey ? '✓' : '—';
+        const quizPill = p.knowledgeCheckResult === 'Pass'
+          ? '<span style="background:#dcfce7;color:#15803d;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600;">Pass</span>'
+          : p.knowledgeCheckResult === 'Fail'
+            ? '<span style="background:#fee2e2;color:#b91c1c;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600;">Fail</span>'
+            : '—';
+        const preScore = typeof p.preSurveyScore === 'number' ? p.preSurveyScore.toFixed(2) : '—';
+        const postScore = typeof p.postSurveyScore === 'number' ? p.postSurveyScore.toFixed(2) : '—';
+        return `
+          <tr>
+            <td style="padding:6px 10px;border-bottom:1px solid #e5e7eb;font-family:ui-monospace,Menlo,monospace;font-size:12px;">${escapeHtml(p.email)}</td>
+            <td style="padding:6px 10px;border-bottom:1px solid #e5e7eb;text-align:center;">${preChk}</td>
+            <td style="padding:6px 10px;border-bottom:1px solid #e5e7eb;text-align:center;">${postChk}</td>
+            <td style="padding:6px 10px;border-bottom:1px solid #e5e7eb;text-align:center;">${quizPill}</td>
+            <td style="padding:6px 10px;border-bottom:1px solid #e5e7eb;text-align:right;">${preScore}</td>
+            <td style="padding:6px 10px;border-bottom:1px solid #e5e7eb;text-align:right;">${postScore}</td>
+          </tr>
+        `;
+      }).join('');
+
+      const anonymousSurvey = (state.preSurvey?.anonymous) || (state.postSurvey?.anonymous);
+      const improvers = people
+        .filter(p => typeof p.preSurveyScore === 'number' && typeof p.postSurveyScore === 'number')
+        .map(p => ({ email: p.email, delta: p.postSurveyScore - p.preSurveyScore }))
+        .sort((a, b) => b.delta - a.delta);
+      const topImprover = (!anonymousSurvey && improvers.length && improvers[0].delta > 0) ? improvers[0] : null;
+
+      let progressionBlock = '';
+      if (anonymousSurvey) {
+        const agg = aggregateProgression();
+        progressionBlock = `
+          <h3 style="color:#1e3a5f;border-bottom:2px solid #0066cc;padding-bottom:6px;font-size:15px;margin:24px 0 12px 0;">Learning Progression — Cohort Aggregate</h3>
+          <div style="background:#fef9c3;border-left:4px solid #ca8a04;padding:10px 14px;border-radius:0 4px 4px 0;font-size:13px;color:#854d0e;margin:8px 0;">
+            This cohort's surveys were collected anonymously, so per-team deltas for ${escapeHtml(partnerName)} aren't available. The figures below reflect the entire cohort — included here as program-level context for the conversation with your consultants.
+          </div>
+          ${agg && agg.preAvg != null && agg.postAvg != null ? `
+          <table style="width:100%;border-collapse:collapse;font-size:14px;">
+            <tbody>
+              <tr><td style="padding:5px 10px;color:#6b7280;width:60%;">Cohort-wide pre-workshop average ${agg.preN ? `<span style="color:#9ca3af;font-size:12px;">(n=${agg.preN})</span>` : ''}</td><td style="padding:5px 10px;text-align:right;font-weight:600;">${agg.preAvg.toFixed(2)}</td></tr>
+              <tr><td style="padding:5px 10px;color:#6b7280;">Cohort-wide post-workshop average ${agg.postN ? `<span style="color:#9ca3af;font-size:12px;">(n=${agg.postN})</span>` : ''}</td><td style="padding:5px 10px;text-align:right;font-weight:600;">${agg.postAvg.toFixed(2)}</td></tr>
+              <tr><td style="padding:5px 10px;color:#6b7280;">Cohort-wide net improvement</td><td style="padding:5px 10px;text-align:right;font-weight:700;color:${agg.delta >= 0 ? '#15803d' : '#b91c1c'};">${(agg.delta >= 0 ? '+' : '') + agg.delta.toFixed(2)}</td></tr>
+            </tbody>
+          </table>
+          ` : ''}
+        `;
+      } else if (stats.preAvg != null && stats.postAvg != null) {
+        progressionBlock = `
+          <h3 style="color:#1e3a5f;border-bottom:2px solid #0066cc;padding-bottom:6px;font-size:15px;margin:24px 0 12px 0;">Learning Progression</h3>
+          <p style="color:#6b7280;font-size:13px;margin:8px 0;">Average of per-consultant self-assessed scores across all matched pre/post survey questions.</p>
+          <table style="width:100%;border-collapse:collapse;font-size:14px;">
+            <tbody>
+              <tr><td style="padding:5px 10px;color:#6b7280;width:60%;">Pre-workshop average</td><td style="padding:5px 10px;text-align:right;font-weight:600;">${stats.preAvg.toFixed(2)}</td></tr>
+              <tr><td style="padding:5px 10px;color:#6b7280;">Post-workshop average</td><td style="padding:5px 10px;text-align:right;font-weight:600;">${stats.postAvg.toFixed(2)}</td></tr>
+              <tr><td style="padding:5px 10px;color:#6b7280;">Net improvement</td><td style="padding:5px 10px;text-align:right;font-weight:700;color:${stats.delta >= 0 ? '#15803d' : '#b91c1c'};">${(stats.delta >= 0 ? '+' : '') + stats.delta.toFixed(2)}</td></tr>
+            </tbody>
+          </table>
+        `;
+      }
+
+      const improverBlock = topImprover ? `
+        <div style="background:#f0f9ff;border-left:4px solid #0066cc;padding:12px 16px;margin:20px 0;border-radius:0 4px 4px 0;">
+          <strong style="color:#1e3a5f;">Standout consultant:</strong> ${escapeHtml(topImprover.email)} showed the biggest pre→post improvement on your team — a +${topImprover.delta.toFixed(2)} jump in self-assessed confidence.
+        </div>
+      ` : '';
+
+      return `
+        <div style="font-family:Arial,Helvetica,sans-serif;max-width:680px;color:#374151;font-size:14px;line-height:1.6;">
+          <div style="background:#1e3a5f;color:white;padding:20px 24px;border-radius:6px 6px 0 0;">
+            <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.1em;opacity:0.85;margin-bottom:4px;">Partner Sponsor Report</div>
+            <h1 style="margin:0;font-size:22px;font-weight:600;">${escapeHtml(partnerName)} — IFP Delivery Workshop</h1>
+            <div style="font-size:13px;opacity:0.85;margin-top:4px;">${escapeHtml(cohort.name)} · ${cohort.startDate} → ${cohort.endDate}</div>
+          </div>
+          <div style="border:1px solid #e2e8f0;border-top:none;padding:20px 24px;border-radius:0 0 6px 6px;">
+            <p style="margin:0 0 16px 0;">Thank you for sending <strong>${stats.sent} consultant${stats.sent === 1 ? '' : 's'}</strong> through this cohort of the IFP Delivery Workshop. Below is a summary of your team's participation, learning progression, and five concrete next steps to translate workshop completion into delivery activity inside ${escapeHtml(partnerName)}'s tenant.</p>
+
+            <h3 style="color:#1e3a5f;border-bottom:2px solid #0066cc;padding-bottom:6px;font-size:15px;margin:24px 0 12px 0;">Your Team's Participation</h3>
+            <table style="width:100%;border-collapse:collapse;font-size:14px;">
+              <tbody>
+                <tr><td style="padding:5px 10px;color:#6b7280;width:60%;">Consultants registered</td><td style="padding:5px 10px;text-align:right;font-weight:600;">${stats.sent}</td></tr>
+                <tr><td style="padding:5px 10px;color:#6b7280;">Pre-survey completed</td><td style="padding:5px 10px;text-align:right;font-weight:600;">${stats.preDone} of ${stats.sent}</td></tr>
+                <tr><td style="padding:5px 10px;color:#6b7280;">Post-survey completed</td><td style="padding:5px 10px;text-align:right;font-weight:600;">${stats.postDone} of ${stats.sent}</td></tr>
+                <tr><td style="padding:5px 10px;color:#6b7280;">Knowledge check passed</td><td style="padding:5px 10px;text-align:right;font-weight:600;">${stats.quizDone} of ${stats.sent}</td></tr>
+                <tr><td style="padding:8px 10px;color:#1e3a5f;border-top:2px solid #0066cc;font-weight:600;">All three milestones completed</td><td style="padding:8px 10px;text-align:right;font-weight:700;color:#15803d;border-top:2px solid #0066cc;font-size:16px;">${stats.allDone} of ${stats.sent} (${pct}%)</td></tr>
+              </tbody>
+            </table>
+
+            ${progressionBlock}
+            ${improverBlock}
+
+            <h3 style="color:#1e3a5f;border-bottom:2px solid #0066cc;padding-bottom:6px;font-size:15px;margin:24px 0 12px 0;">Your Consultants</h3>
+            <table style="width:100%;border-collapse:collapse;font-size:13px;">
+              <thead><tr style="background:#f8fafc;">
+                <th style="padding:8px 10px;text-align:left;font-size:11px;text-transform:uppercase;color:#6b7280;">Email</th>
+                <th style="padding:8px 10px;text-align:center;font-size:11px;text-transform:uppercase;color:#6b7280;">Pre</th>
+                <th style="padding:8px 10px;text-align:center;font-size:11px;text-transform:uppercase;color:#6b7280;">Post</th>
+                <th style="padding:8px 10px;text-align:center;font-size:11px;text-transform:uppercase;color:#6b7280;">Quiz</th>
+                <th style="padding:8px 10px;text-align:right;font-size:11px;text-transform:uppercase;color:#6b7280;">Pre Score</th>
+                <th style="padding:8px 10px;text-align:right;font-size:11px;text-transform:uppercase;color:#6b7280;">Post Score</th>
+              </tr></thead>
+              <tbody>${personRows}</tbody>
+            </table>
+
+            <h3 style="color:#1e3a5f;border-bottom:2px solid #0066cc;padding-bottom:6px;font-size:15px;margin:24px 0 12px 0;">Next Steps — Convert Training Into Delivery</h3>
+            <ol style="margin:8px 0 0 0;padding-left:24px;">
+              <li style="margin-bottom:10px;"><strong>Copy the reference IFP model + app into ${escapeHtml(partnerName)}'s tenant.</strong> Schedule a 60-minute working session with the Anaplan IFP product team. Your trained consultants pair on the copy and walk away with a tenant-local sandbox to keep iterating in.</li>
+              <li style="margin-bottom:10px;"><strong>Pair newly trained consultants with an active customer engagement within 30 days.</strong> The material decays quickly — put it on a live CapEx, OpEx, or workforce-planning engagement while the muscle memory is fresh.</li>
+              <li style="margin-bottom:10px;"><strong>Use the persistent #ifp-delivery Slack channel for ongoing office hours.</strong> Anaplan IFP product staff the channel; same-day answers. Encourage your team to post real engagement obstacles as they come up.</li>
+              <li style="margin-bottom:10px;"><strong>Schedule a 30-minute delivery checkpoint with the IFP product team next quarter.</strong> Review what is in flight, what is stuck, and where the next round of enablement should focus.</li>
+              <li style="margin-bottom:10px;"><strong>Register your next batch for the upcoming cohort.</strong> If you have consultants who could not make this round, we can hold capacity for ${escapeHtml(partnerName)} in the next session.</li>
+            </ol>
+
+            <p style="margin-top:28px;color:#6b7280;font-size:12px;font-style:italic;border-top:1px solid #e5e7eb;padding-top:12px;">To schedule any of the above, reach out to the Anaplan partner alliances team. Generated ${new Date().toISOString().split('T')[0]} from the IFP Workshop Cohort Tracker.</p>
+          </div>
+        </div>
+      `;
+    }
+
+    function populatePartnerReportSelector() {
+      const sel = document.getElementById('partner-report-select');
+      if (!sel) return;
+      const cohort = getCurrentCohort();
+      const prior = sel.value;
+      sel.innerHTML = '';
+      if (!cohort) return;
+      partnerBreakdown(cohort).forEach(p => {
+        const o = document.createElement('option');
+        o.value = p.name;
+        o.textContent = `${p.name} (${p.people.length})`;
+        sel.appendChild(o);
+      });
+      if (prior && [...sel.options].some(o => o.value === prior)) sel.value = prior;
+    }
+
+    async function copyHtmlToClipboard(html, successMsg) {
+      try {
+        await navigator.clipboard.write([
+          new ClipboardItem({
+            'text/html': new Blob([html], { type: 'text/html' }),
+            'text/plain': new Blob([html.replace(/<[^>]+>/g, '')], { type: 'text/plain' })
+          })
+        ]);
+        alert(successMsg);
+      } catch (e) {
+        await navigator.clipboard.writeText(html);
+        alert(successMsg + ' (Copied as text — your browser may not support rich-text clipboard.)');
+      }
+    }
+
+    function downloadHtmlFile(bodyHtml, filename, title) {
+      const fullHtml = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${escapeHtml(title)}</title>
+<style>body{margin:0;padding:24px;background:#f8fafc;}</style>
+</head>
+<body>${bodyHtml}</body>
+</html>`;
+      const blob = new Blob([fullHtml], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function partnerSlug(name) {
+      return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    }
+
+    document.getElementById('generate-exec-btn').addEventListener('click', () => {
+      const html = generateExecSummaryHtml();
+      const out = document.getElementById('exec-output');
+      out.innerHTML = html;
+      out.style.display = 'block';
+    });
+    document.getElementById('copy-exec-btn').addEventListener('click', async () => {
+      await copyHtmlToClipboard(generateExecSummaryHtml(), 'Executive summary HTML copied to clipboard. Paste into your email client.');
+    });
+    document.getElementById('download-exec-btn').addEventListener('click', () => {
+      const cohort = getCurrentCohort();
+      if (!cohort) return;
+      downloadHtmlFile(generateExecSummaryHtml(), `${cohort.id}-executive-summary.html`, `Executive Summary — ${cohort.name}`);
+    });
+
+    document.getElementById('generate-partner-btn').addEventListener('click', () => {
+      const partnerName = document.getElementById('partner-report-select').value;
+      if (!partnerName) return;
+      const out = document.getElementById('partner-report-output');
+      out.innerHTML = generatePartnerReportHtml(partnerName);
+      out.style.display = 'block';
+    });
+    document.getElementById('copy-partner-btn').addEventListener('click', async () => {
+      const partnerName = document.getElementById('partner-report-select').value;
+      if (!partnerName) return;
+      await copyHtmlToClipboard(generatePartnerReportHtml(partnerName), `${partnerName} report HTML copied to clipboard. Paste into your email client.`);
+    });
+    document.getElementById('download-partner-btn').addEventListener('click', () => {
+      const partnerName = document.getElementById('partner-report-select').value;
+      if (!partnerName) return;
+      const cohort = getCurrentCohort();
+      downloadHtmlFile(generatePartnerReportHtml(partnerName), `${cohort.id}-${partnerSlug(partnerName)}-report.html`, `${partnerName} — IFP Delivery Workshop ${cohort.name}`);
+    });
+    document.getElementById('download-all-partners-btn').addEventListener('click', () => {
+      const cohort = getCurrentCohort();
+      if (!cohort) return;
+      const partners = partnerBreakdown(cohort);
+      if (!confirm(`Trigger ${partners.length} separate downloads, one HTML file per partner?`)) return;
+      partners.forEach((p, i) => {
+        setTimeout(() => {
+          downloadHtmlFile(generatePartnerReportHtml(p.name), `${cohort.id}-${partnerSlug(p.name)}-report.html`, `${p.name} — IFP Delivery Workshop ${cohort.name}`);
+        }, i * 250);
+      });
+    });
+
+    // ===================== Import New Cohort =====================
+    function parseEmailList(text) {
+      const out = [];
+      text.split(/\r?\n/).forEach(raw => {
+        const line = raw.trim();
+        if (!line) return;
+        const m = line.match(/[\w.+-]+@[\w-]+(?:\.[\w-]+)+/);
+        if (m) out.push(m[0].toLowerCase());
+      });
+      return out;
+    }
+
+    function lookupPartnerForEmail(email) {
+      if (!state.partners || !state.partners.partners) return null;
+      const at = email.lastIndexOf('@');
+      if (at < 0) return null;
+      const domain = email.slice(at + 1).toLowerCase();
+      const hit = state.partners.partners.find(p =>
+        p.domains.some(d => d.toLowerCase() === domain)
+      );
+      return hit ? hit.name : null;
+    }
+
+    function buildNewCohortFromEmails(emails, opts) {
+      const seen = new Set();
+      const participants = [];
+      const unmapped = [];
+      emails.forEach(email => {
+        if (seen.has(email)) return;
+        seen.add(email);
+        const partner = lookupPartnerForEmail(email);
+        if (!partner) unmapped.push(email);
+        participants.push({
+          email,
+          partner: partner || 'Unknown',
+          excluded: partner ? state.excludeSet.has(partner) : false,
+          completion: { preSurvey: false, postSurvey: false, knowledgeCheck: false },
+          preSurveyScore: null,
+          postSurveyScore: null,
+          knowledgeCheckResult: null
+        });
+      });
+      return {
+        cohort: {
+          id: opts.id,
+          name: opts.name,
+          startDate: opts.startDate || null,
+          endDate: opts.endDate || null,
+          participants
+        },
+        unmapped
+      };
+    }
+
+    function readNewCohortFormFields() {
+      const id = document.getElementById('new-cohort-id').value.trim();
+      const name = document.getElementById('new-cohort-name').value.trim();
+      const startDate = document.getElementById('new-cohort-start').value;
+      const endDate = document.getElementById('new-cohort-end').value;
+      const errs = [];
+      if (!id) errs.push('Cohort ID is required (e.g. 2026-06-16)');
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(id)) errs.push('Cohort ID should be ISO date format YYYY-MM-DD');
+      if (!name) errs.push('Display name is required');
+      if (!startDate) errs.push('Start date is required');
+      if (!endDate) errs.push('End date is required');
+      return { opts: { id, name, startDate, endDate }, errs };
+    }
+
+    function renderNewCohortPreview(result) {
+      const target = document.getElementById('new-cohort-preview');
+      const byPartner = new Map();
+      result.cohort.participants.forEach(p => {
+        if (!byPartner.has(p.partner)) byPartner.set(p.partner, []);
+        byPartner.get(p.partner).push(p);
+      });
+      const ranked = [...byPartner.entries()].sort((a, b) => b[1].length - a[1].length || a[0].localeCompare(b[0]));
+      const includedCount = result.cohort.participants.filter(p => !p.excluded).length;
+      const excludedCount = result.cohort.participants.length - includedCount;
+      const rows = ranked.map(([partner, people]) => {
+        const isUnknown = partner === 'Unknown';
+        const isExcluded = state.excludeSet.has(partner);
+        const cls = isUnknown ? 'unknown' : (isExcluded ? 'excluded' : '');
+        const note = isUnknown ? 'no matching domain in _partners.json' : (isExcluded ? 'excluded from stats' : '');
+        return `
+          <tr class="${cls}">
+            <td>${escapeHtml(partner)}</td>
+            <td style="text-align:right;">${people.length}</td>
+            <td style="font-size:0.78rem;color:#6b7280;">${escapeHtml(note)}</td>
+          </tr>
+        `;
+      }).join('');
+      const warning = result.unmapped.length
+        ? `<div class="unmapped-warning"><strong>⚠ ${result.unmapped.length} email${result.unmapped.length === 1 ? '' : 's'} did not map to a known partner.</strong> Either add the domain to <code>data/cohorts/_partners.json</code> or fix the typo before committing.<br><br><strong>Unmapped:</strong> ${result.unmapped.map(e => escapeHtml(e)).join(', ')}</div>`
+        : '';
+      const indexLine = JSON.stringify({ id: result.cohort.id, name: result.cohort.name, file: `${result.cohort.id}.json` });
+      target.innerHTML = `
+        <h3 style="margin: 1rem 0 0.5rem 0; color: #1e3a5f; font-size: 1rem;">Preview — ${result.cohort.participants.length} total · ${includedCount} counted · ${excludedCount} excluded · ${byPartner.size} partner bucket${byPartner.size === 1 ? '' : 's'}</h3>
+        ${warning}
+        <table class="partner-summary-table">
+          <thead><tr><th>Partner</th><th style="text-align:right;">Count</th><th>Note</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+        <p class="help-note" style="margin-top:0.75rem;">After downloading <code>${escapeHtml(result.cohort.id)}.json</code> to <code>data/cohorts/</code>, add this line inside the <code>cohorts</code> array in <code>data/cohorts/_index.json</code>:</p>
+        <pre id="new-cohort-index-line">${escapeHtml(indexLine)}</pre>
+      `;
+      target.style.display = 'block';
+      document.getElementById('copy-index-line-btn').style.display = '';
+      document.getElementById('copy-index-line-btn').dataset.line = indexLine;
+    }
+
+    function getNewCohortEmailsOrAlert() {
+      const text = document.getElementById('new-cohort-emails').value;
+      const emails = parseEmailList(text);
+      if (!emails.length) {
+        alert('No emails found. Paste a list (one per line) or upload an XLSX/CSV.');
+        return null;
+      }
+      return emails;
+    }
+
+    document.getElementById('new-cohort-upload').addEventListener('change', async e => {
+      const file = e.target.files[0]; if (!file) return;
+      const parsed = await readXlsxFile(file);
+      const headers = parsed.headers || [];
+      const emailIdx = headers.findIndex(h => /e-?mail/i.test(h));
+      const idx = emailIdx >= 0 ? emailIdx : 0;
+      const emails = [];
+      parsed.data.forEach(row => {
+        const cell = row[idx];
+        if (cell == null || cell === '') return;
+        const m = String(cell).match(/[\w.+-]+@[\w-]+(?:\.[\w-]+)+/);
+        if (m) emails.push(m[0].toLowerCase());
+      });
+      // Append to textarea (don't clobber existing paste content)
+      const ta = document.getElementById('new-cohort-emails');
+      const existing = ta.value.trim();
+      ta.value = (existing ? existing + '\n' : '') + emails.join('\n');
+    });
+
+    document.getElementById('preview-new-cohort-btn').addEventListener('click', () => {
+      const emails = getNewCohortEmailsOrAlert();
+      if (!emails) return;
+      const { opts, errs } = readNewCohortFormFields();
+      if (errs.length) { alert(errs.join('\n')); return; }
+      const result = buildNewCohortFromEmails(emails, opts);
+      renderNewCohortPreview(result);
+    });
+
+    document.getElementById('download-new-cohort-btn').addEventListener('click', () => {
+      const emails = getNewCohortEmailsOrAlert();
+      if (!emails) return;
+      const { opts, errs } = readNewCohortFormFields();
+      if (errs.length) { alert(errs.join('\n')); return; }
+      const result = buildNewCohortFromEmails(emails, opts);
+      renderNewCohortPreview(result);
+      const blob = new Blob([JSON.stringify(result.cohort, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${result.cohort.id}.json`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    });
+
+    document.getElementById('copy-index-line-btn').addEventListener('click', async () => {
+      const line = document.getElementById('copy-index-line-btn').dataset.line || '';
+      if (!line) return;
+      try {
+        await navigator.clipboard.writeText(line);
+        alert('Index line copied. Paste it inside the cohorts array in data/cohorts/_index.json.');
+      } catch (e) {
+        alert('Clipboard write failed — copy this manually:\n\n' + line);
+      }
+    });
+
+    // ===================== Export Updated JSON =====================
+    document.getElementById('export-json-btn').addEventListener('click', () => {
+      const cohort = getCurrentCohort();
+      if (!cohort) return;
+      const blob = new Blob([JSON.stringify(cohort, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${cohort.id}.json`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    });
+
+    // Reload button
+    document.getElementById('reload-btn').addEventListener('click', async () => {
+      if (!confirm('Discard local checkbox / survey changes and reload from the committed JSON?')) return;
+      const cache = loadCache();
+      if (cache.overrides) delete cache.overrides[state.currentCohortId];
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(cache));
+      delete state.cohorts[state.currentCohortId];
+      state.preSurvey = null;
+      state.postSurvey = null;
+      document.getElementById('pre-state').textContent = 'no file loaded';
+      document.getElementById('pre-state').classList.remove('loaded');
+      document.getElementById('post-state').textContent = 'no file loaded';
+      document.getElementById('post-state').classList.remove('loaded');
+      document.getElementById('quiz-state').textContent = 'no file loaded';
+      document.getElementById('quiz-state').classList.remove('loaded');
+      await loadCohort(state.currentCohortId);
+    });
+
+    // ===================== Utilities =====================
+    function escapeHtml(s) {
+      return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    }
+    function formatScore(v) {
+      if (typeof v !== 'number') return v;
+      return v.toFixed(2);
+    }
+    function formatResult(v) {
+      if (v === 'Pass') return '<span class="result-pill pass">Pass</span>';
+      if (v === 'Fail') return '<span class="result-pill fail">Fail</span>';
+      return '—';
+    }
+
+    // ===================== Boot =====================
+    init();
+  </script>
+</body>
+</html>

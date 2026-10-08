@@ -1,0 +1,195 @@
+{% extends "base.html" %}
+{% block title %}Participants — {{ session.name }}{% endblock %}
+{% block body %}
+<div class="admin-shell">
+  {% set page_title = 'Participants' %}
+  {% set breadcrumbs = [
+    {'label': session.workshop_name, 'url': url_for('admin_workshop_detail', slug=session.workshop_slug)},
+    {'label': session.name, 'url': url_for('admin_session_detail', slug=session.workshop_slug, session_slug=session.slug)},
+    {'label': 'Participants'}
+  ] %}
+  {% include "_admin_header.html" %}
+
+  {% if tenant_pool_error %}
+  <div class="card" style="border-left:4px solid #dc2626;background:#fef2f2;">
+    <h2 style="margin-top:0;color:#991b1b;">Tenant pool insufficient — enrollment blocked</h2>
+    <p style="margin:0.3rem 0 0;color:#7f1d1d;">{{ tenant_pool_error }}</p>
+    <p class="help-note" style="margin-top:0.5rem;">Manage the pool at <a href="{{ url_for('admin_workshop_tenants', slug=session.workshop_slug) }}">{{ session.workshop_slug }} / Tenants</a>.</p>
+  </div>
+  {% endif %}
+
+  {% if tenant_action_flash %}
+    {% if tenant_action_flash.error %}
+    <div class="card" style="border-left:4px solid #dc2626;background:#fef2f2;padding:0.75rem 1rem;">
+      <p style="margin:0;color:#991b1b;">{{ tenant_action_flash.error }}</p>
+    </div>
+    {% elif tenant_action_flash.ok %}
+    <div class="card" style="border-left:4px solid #059669;background:#ecfdf5;padding:0.75rem 1rem;">
+      <p style="margin:0;color:#065f46;">{{ tenant_action_flash.ok }}</p>
+    </div>
+    {% endif %}
+  {% endif %}
+
+  {% if pool_summary %}
+  <div class="card" style="padding:0.7rem 1rem;border-left:4px solid {% if pool_summary.free == 0 %}#dc2626{% elif pool_summary.free < 5 %}#d97706{% else %}#059669{% endif %};background:#f9fafb;">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;">
+      <div>
+        <span style="font-size:0.72rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#6b7280;">Tenant pool</span>
+        <span style="margin-left:0.6rem;font-family:ui-monospace,Menlo,monospace;font-variant-numeric:tabular-nums;">
+          <strong style="color:#111827;font-size:1.05rem;">{{ pool_summary.free }}</strong>
+          <span style="color:#6b7280;">of {{ pool_summary.total }} free for this session's window</span>
+        </span>
+      </div>
+      <a href="{{ url_for('admin_workshop_tenants', slug=pool_summary.workshop_slug) }}" class="secondary-btn" style="text-decoration:none;padding:0.25rem 0.7rem;font-size:0.8rem;">Manage pool →</a>
+    </div>
+  </div>
+  {% endif %}
+
+  {% if reset_creds %}
+  <div class="card" style="border-left:4px solid #d97706;background:#fffbeb;">
+    <h2 style="margin-top:0;color:#92400e;">Password reset · {{ reset_creds.username }}</h2>
+    <p class="help-note" style="margin-top:0.25rem;">Copy now — the new password is only shown once. Send it to the participant and they can sign in.</p>
+    <textarea id="reset-block" readonly style="width:100%;min-height:60px;padding:0.6rem 0.75rem;border:1px solid #d1d5db;border-radius:4px;font-family:ui-monospace,Menlo,monospace;font-size:0.82rem;background:#f8fafc;">{{ reset_creds.username }}{{ '	' }}{{ reset_creds.password }}</textarea>
+    <div style="margin-top:0.5rem;">
+      <button class="primary-btn" type="button" onclick="copyReset()">Copy to clipboard</button>
+    </div>
+  </div>
+  {% endif %}
+
+  {% if added_results %}
+  <div class="card" style="border-left:4px solid #15803d;">
+    <h2 style="margin-top:0;color:#15803d;">Just added · {{ added_results|length }} email{{ '' if added_results|length == 1 else 's' }}</h2>
+    {% set new_creds = added_results | selectattr('initial_password') | list %}
+    {% if new_creds %}
+      <p class="help-note" style="margin-top:0.25rem;">
+        <strong>{{ new_creds|length }} new account{{ '' if new_creds|length == 1 else 's' }} created.</strong>
+        Copy the credentials below now — initial passwords are only shown once. Send each participant their username and password.
+      </p>
+      <textarea id="creds-block" readonly style="width:100%;min-height:120px;padding:0.6rem 0.75rem;border:1px solid #d1d5db;border-radius:4px;font-family:ui-monospace,Menlo,monospace;font-size:0.82rem;background:#f8fafc;">{% for r in new_creds %}{{ r.email }}{{ '	' }}{{ r.initial_password }}
+{% endfor %}</textarea>
+      <div style="margin-top:0.5rem;">
+        <button class="primary-btn" type="button" onclick="copyCreds()">Copy all to clipboard</button>
+      </div>
+    {% endif %}
+    <table class="users-table" style="margin-top:1rem;">
+      <thead><tr><th>Email</th><th>Partner</th><th>User</th><th>Enrollment</th><th>Tenant</th></tr></thead>
+      <tbody>
+        {% for r in added_results %}
+        <tr>
+          <td>{{ r.email }}</td>
+          <td>{{ r.partner }}{% if r.excluded %} <span class="badge">excluded</span>{% endif %}</td>
+          <td>
+            {% if r.user_status == 'created' %}<span class="badge facilitator">new account</span>
+            {% else %}<span class="badge">existing</span>
+            {% endif %}
+          </td>
+          <td>
+            {% if r.enroll_status == 'enrolled' %}<span class="badge">enrolled</span>
+            {% elif r.enroll_status == 'reactivated' %}<span class="badge">re-enrolled</span>
+            {% else %}<span class="badge">already enrolled</span>
+            {% endif %}
+          </td>
+          <td>
+            {% if r.tenant %}
+              <code style="font-size:0.78rem;">{{ r.tenant.username }}</code>
+              {% if r.tenant.hold_until %}<span style="font-size:0.72rem;color:#6b7280;">· until {{ r.tenant.hold_until }}</span>{% endif %}
+            {% else %}
+              <span style="color:#9ca3af;font-size:0.78rem;">—</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% endif %}
+
+  <div class="card">
+    <h2 style="margin-top:0;">Add participants</h2>
+    <p class="help-note">Paste one email per line. Accepts plain <code>user@domain</code>, <code>Name &lt;user@domain&gt;</code>, or <code>"Name" &lt;user@domain&gt;</code>. Partner is auto-assigned from the email domain (data/cohorts/_partners.json) and Anaplan internal staff are auto-flagged as excluded.</p>
+    <form method="post" action="{{ url_for('admin_session_participants', slug=session.workshop_slug, session_slug=session.slug) }}">
+      <textarea name="emails" placeholder="first.last@genpact.com&#10;Jane Doe &lt;jane@accenture.com&gt;&#10;..." required style="width:100%;min-height:140px;padding:0.6rem 0.75rem;border:1px solid #d1d5db;border-radius:4px;font-family:ui-monospace,Menlo,monospace;font-size:0.85rem;"></textarea>
+      <div style="margin-top:0.75rem;">
+        <button class="primary-btn" type="submit">Enroll participants</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="card">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem;">
+      <h2 style="margin:0;">Enrolled · {{ total }} total{% if total != included %} · {{ included }} counted{% endif %}</h2>
+    </div>
+    {% if not by_partner %}
+      <p class="help-note">No one enrolled yet.</p>
+    {% else %}
+      {% for partner, plist in by_partner.items() %}
+      <div style="margin-top:1rem;">
+        <div style="font-size:0.85rem;font-weight:600;color:#1e3a5f;border-bottom:1px solid #e2e8f0;padding-bottom:0.3rem;margin-bottom:0.4rem;">
+          {{ partner }}{% if plist[0].excluded %} <span class="badge">excluded from stats</span>{% endif %}
+          <span style="font-size:0.78rem;color:#6b7280;font-weight:400;">· {{ plist|length }}</span>
+        </div>
+        <table class="users-table">
+          <thead><tr><th>Email</th><th>Enrolled</th><th>Last login</th><th>Tenant</th><th style="text-align:right;">Actions</th></tr></thead>
+          <tbody>
+            {% for p in plist %}
+            <tr>
+              <td>{{ p.email }}</td>
+              <td>{{ p.enrolled_at }}</td>
+              <td>{{ p.last_login_at or '—' }}</td>
+              <td style="min-width:220px;">
+                {% if p.tenant_username %}
+                  <code style="font-size:0.78rem;">{{ p.tenant_username }}</code>
+                  {% if p.tenant_hold_until %}<span style="font-size:0.72rem;color:#6b7280;"> · until {{ p.tenant_hold_until }}</span>{% endif %}
+                  <details style="display:inline-block;margin-left:0.4rem;">
+                    <summary style="cursor:pointer;color:#0369a1;font-size:0.75rem;user-select:none;">Extend / release</summary>
+                    <div style="margin-top:0.4rem;padding:0.5rem 0.6rem;background:#f8fafc;border:1px solid #e2e8f0;border-radius:4px;">
+                      <form method="post" action="{{ url_for('admin_session_participant_extend_tenant', slug=session.workshop_slug, session_slug=session.slug, user_id=p.user_id) }}" style="display:flex;gap:0.4rem;align-items:center;margin-bottom:0.5rem;">
+                        <label style="font-size:0.72rem;color:#374151;font-weight:600;">Extend to:</label>
+                        <input type="date" name="hold_until" min="{{ p.tenant_hold_until }}" required style="padding:0.2rem 0.4rem;font-size:0.78rem;border:1px solid #d1d5db;border-radius:3px;">
+                        <button type="submit" class="secondary-btn" style="padding:0.2rem 0.55rem;font-size:0.75rem;">Save</button>
+                      </form>
+                      <form method="post" action="{{ url_for('admin_session_participant_release_tenant', slug=session.workshop_slug, session_slug=session.slug, user_id=p.user_id) }}" onsubmit="return confirm('Release {{ p.tenant_username }} back to the pool? Participant stays enrolled but loses tenant access.');">
+                        <button type="submit" class="secondary-btn" style="padding:0.2rem 0.55rem;font-size:0.75rem;color:#991b1b;border-color:#fca5a5;">Release tenant now</button>
+                      </form>
+                    </div>
+                  </details>
+                {% else %}
+                  <span style="color:#9ca3af;font-size:0.78rem;">—</span>
+                {% endif %}
+              </td>
+              <td style="text-align:right;">
+                <form method="post" action="{{ url_for('admin_session_participant_reset_password', slug=session.workshop_slug, session_slug=session.slug, user_id=p.user_id) }}" onsubmit="return confirm('Reset password for {{ p.email }}? The new password will be shown once.');" style="display:inline;margin-right:0.4rem;">
+                  <button class="secondary-btn" type="submit">Reset password</button>
+                </form>
+                <form method="post" action="{{ url_for('admin_session_participant_remove', slug=session.workshop_slug, session_slug=session.slug, user_id=p.user_id) }}" onsubmit="return confirm('Remove {{ p.email }} from this session?');" style="display:inline;">
+                  <button class="danger-btn" type="submit">Remove</button>
+                </form>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% endfor %}
+    {% endif %}
+  </div>
+</div>
+<script>
+function copyCreds() {
+  const ta = document.getElementById('creds-block');
+  ta.select();
+  navigator.clipboard.writeText(ta.value).then(
+    () => alert('Credentials copied to clipboard.'),
+    () => { document.execCommand('copy'); alert('Copied (legacy clipboard).'); }
+  );
+}
+function copyReset() {
+  const ta = document.getElementById('reset-block');
+  ta.select();
+  navigator.clipboard.writeText(ta.value).then(
+    () => alert('New credentials copied to clipboard.'),
+    () => { document.execCommand('copy'); alert('Copied (legacy clipboard).'); }
+  );
+}
+</script>
+{% endblock %}

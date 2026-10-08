@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ejercicio de extensión 1 — IFP Delivery Partner Workshop</title>
+  <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body>
+  <div class="mobile-header">
+    <button id="hamburger">☰</button>
+    <span>IFP Delivery Partner Workshop</span>
+  </div>
+
+  <nav class="sidebar"></nav>
+
+<main class="main-content">
+    <div class="content-header">
+      <h1>Ejercicio de extensión 1: ajustes manuales</h1>
+      <p class="subtitle">Añada 2 nuevos Line Items de ajuste manual al Módulo OpEx y modifique la fórmula de agregación</p>
+      <div class="badge-row"><span class="content-badge">Extensiones</span><span class="content-badge">30 min</span><span class="content-badge">Práctica guiada</span></div>
+    </div>
+    <div class="content-body">
+
+      <div class="callout-info" style="background:#eff6ff;border-left:4px solid #3b82f6;">
+        <span class="callout-label">🌐 Aviso de traducción</span>
+        <p>Esta es una traducción automática de la versión original en inglés. Para la versión autoritativa y más actualizada, consulte <a href="../11-extension-exercise-1.html">la versión en inglés</a>. Reporte cualquier problema de traducción a su contacto Anaplan.</p>
+      </div>
+
+<h2>Requisito de negocio</h2>
+      <p>Se necesitan 2 tipos adicionales de ajustes manuales para inputs de gastos.</p>
+
+      <h2>Solución</h2>
+      <ul>
+        <li>Añadir nuevos Line Items al Módulo afectado</li>
+        <li>Modificar la fórmula de agregación para incluir los nuevos Line Items</li>
+      </ul>
+
+      <h2>Pasos</h2>
+
+      <div class="step"><div class="step-badge">1</div><div class="step-content"><h3>Abrir el Módulo Expense Planning</h3><p>Abra el Módulo <strong>INP OPX Expense Planning</strong> en el modelo "Financial Planning".</p></div></div>
+
+      <div class="step"><div class="step-badge">2</div><div class="step-content"><h3>Añadir 2 nuevos Line Items</h3><p>Añada 2 nuevos Line Items en la sección "Direct Input Method" del blueprint:</p><ul><li><strong>Manual Adjustment #1</strong></li><li><strong>Manual Adjustment #2</strong></li><li>Establezca el Format de los nuevos Line Items (igual que "Amount")</li><li>Establezca el Write Access Driver para cada nuevo Line Item</li><li>Documente para qué son los Line Items en el campo "Notes"</li></ul></div></div>
+
+      <div class="step"><div class="step-badge">3</div><div class="step-content"><h3>Modificar la fórmula de agregación</h3><p>Necesitamos modificar la fórmula para el Line Item <strong>Direct Input Fcst</strong> para incluir los 2 nuevos Line Items:</p><ul><li>Modifique la fórmula</li><li>Documente lo que ha hecho:<ul><li>Use el campo "Notes" del blueprint del Módulo</li><li>Mantenga una lista maestra de overrides en un documento offline, incluyendo la sintaxis de fórmula original y actualizada</li></ul></li></ul></div></div>
+
+      <div class="step"><div class="step-badge">4</div><div class="step-content"><h3>Actualizar el Line-Item Subset y los ajustes Admin</h3><p>Añada los 2 nuevos Line Items al LISS (Line-Item Subset for Show/Hide):</p><ul><li>Abra el line-item subset <strong>"LISS: OpEx Filter"</strong></li><li>Marque el booleano para los 2 nuevos ajustes</li><li>Abra el Módulo <strong>"ADMIN LISS OpEx Filter"</strong> y establezca el "Forecast Method" a "Direct Input" para cada uno de los 2 nuevos Line Items</li></ul></div></div>
+
+      <div class="step"><div class="step-badge">5</div><div class="step-content"><h3>Verificar en la UX App</h3><p>Abra la página <strong>"OpEx – planning"</strong> en la UX App:</p><ul><li>Seleccione la cuenta <strong>"6005 Office Equipment"</strong></li><li>Revise que la lógica funcione correctamente</li></ul></div></div>
+
+      <div class="prevnext-nav"><a class="prevnext-btn" href="./10-extensions-overview.html">← Anterior</a><a class="prevnext-btn" href="./12-extension-exercise-2.html">Siguiente →</a></div>
+    </div>
+  </main>
+  <script src="../../js/nav.js"></script>
+</body>
+</html>
